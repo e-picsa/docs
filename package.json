@@ -1,0 +1,24 @@
+{
+  "name": "picsa-docs",
+  "license": "See LICENSE",
+  "scripts": {
+    "dev": "next dev -p 4040",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "^13.1.6",
+    "nextra": "^2.2.14",
+    "nextra-theme-docs": "^2.2.14",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.11.18",
+    "typescript": "4.9.4"
+  },
+  "packageManager": "yarn@3.2.1",
+  "engines": {
+    "node": ">=16.x <=18.x"
+  }
+}
