@@ -2,9 +2,9 @@
   "name": "picsa-docs",
   "license": "See LICENSE",
   "scripts": {
-    "dev": "next dev -p 4040",
+    "start": "opener http://localhost:3000 && next dev -p 3000",
     "build": "next build",
-    "start": "next start"
+    "lint": "next lint"
   },
   "dependencies": {
     "next": "^13.1.6",
@@ -14,11 +14,17 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@next/font": "^13.1.6",
     "@types/node": "18.11.18",
+    "@types/react": "18.0.27",
+    "@types/react-dom": "^18.0.10",
+    "eslint": "^8.33.0",
+    "eslint-config-next": "^13.1.6",
+    "opener": "^1.5.2",
     "typescript": "4.9.4"
   },
-  "packageManager": "yarn@3.2.1",
   "engines": {
     "node": ">=16.x <=18.x"
-  }
+  },
+  "packageManager": "yarn@3.3.1"
 }
