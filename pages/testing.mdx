@@ -1,17 +1,28 @@
 # Device Testing
 
 ### Running on a device
-To run on a device with live-reload first configure a local server to connect to via `apps\picsa-apps\extension-app-native\capacitor.config.ts`
+
+To run on a device with live-reload first configure a local server to connect
+You will need to determine your local adapter IP, uncomment and replace config in
+`apps\picsa-apps\extension-app-native\capacitor.config.ts`
+
+```ts
+/** Uncomment and replace with local ip to serve live-reload */
+
+// url: 'http://192.168.50.67:4200',
+```
+
+(on windows you can check your ip via `ip config` and look for `IPv4` address for your internet adapter)
 
 Sync the changes to capacitor via the project build script.
 
-```
+```sh
 yarn nx run picsa-apps-extension-app-native:build
 ```
 
 Start the local server via the `external` configuration defined in `apps\picsa-apps\extension-app\project.json`
 
-```
+```sh
 yarn nx run picsa-apps-extension-app:serve --configuration=external
 ```
 
