@@ -2,11 +2,13 @@
   "name": "picsa-docs",
   "license": "See LICENSE",
   "scripts": {
-    "dev": "next dev -p 4040",
+    "dev": "next dev -p 4001",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "spellcheck":"yarn cspell ."
   },
   "dependencies": {
+    "cspell": "^6.27.0",
     "next": "^13.1.6",
     "nextra": "^2.2.14",
     "nextra-theme-docs": "^2.2.14",
