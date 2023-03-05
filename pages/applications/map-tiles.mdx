@@ -1,16 +1,16 @@
 # Map Tiles 
 
 The PICSA Map has a base world outline and some specific country outlines.
-There is also an optional online baselayer of a full map from openstreetmap
+There is also an optional online base layer of a full map from openstreetmap
 
 ## About the Data
 
-The map data consists of baselayer images and geojson overlay
+The map data consists of base layer images and geojson overlay
 
 The geojson is downloaded from natural earth, and optimised by:
 
 1. Filter to only include countries used for PICSA app
-2. Remove columns to only keep those use for PICSA app (currently just admininistrative name)
+2. Remove columns to only keep those use for PICSA app (currently just administrative name)
 3. Converting to topojson
 
 This should result in drastic reduction, e.g. just retaining admin features and

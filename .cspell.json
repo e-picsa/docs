@@ -1,0 +1,35 @@
+{
+  "version": "0.2",
+  "language": "en-GB",
+  "ignorePaths": [
+    "node_modules/**",
+    "**/node_modules/**",
+    ".next/",
+    "public/",
+    "package.json",
+    "yarn-error.log",
+    "yarn.lock"
+  ],
+  "words": [
+    "basemap",
+    "basemaps",
+    "e-picsa",
+    "e2e",
+    "enketo",
+    "jetify",
+    "leafletjs",
+    "maptiler",
+    "nextra",
+    "nx",
+    "openstreetmap",
+    "penpot",
+    "picsa",
+    "protobuf",
+    "qgis",
+    "qmetatiles",
+    "topojson",
+    "webcomponent",
+    "webp"
+  ],
+  "flagWords": []
+}

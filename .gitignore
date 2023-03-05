@@ -18,6 +18,7 @@ node_modules
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+yarn-error.log
 
 # testing
 /coverage
