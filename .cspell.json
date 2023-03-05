@@ -10,6 +10,26 @@
     "yarn-error.log",
     "yarn.lock"
   ],
-  "words": ["picsa", "qgis", "e-picsa", "nx", "e2e", "nextra","openstreetmap","webp","jetify"],
-  "flagWords": ["sex", "hate"]
+  "words": [
+    "basemap",
+    "basemaps",
+    "e-picsa",
+    "e2e",
+    "enketo",
+    "jetify",
+    "leafletjs",
+    "maptiler",
+    "nextra",
+    "nx",
+    "openstreetmap",
+    "penpot",
+    "picsa",
+    "protobuf",
+    "qgis",
+    "qmetatiles",
+    "topojson",
+    "webcomponent",
+    "webp"
+  ],
+  "flagWords": []
 }

@@ -1,4 +1,4 @@
-# Bundling 
+# Bundling
 
 Each PICSA tool is built as a standalone app, however we still want the option of bundling multiple tools together to form various products such as the extension app
 
@@ -32,7 +32,7 @@ A few things to remember when taking this approach:
 
 - Alternative app-module imports will need to be provided to prevent re-initialisation of features such as the browser module, and provide custom router
 
-- Routes will need to be mapped for any imported apps and kept in sync. E.g. if the main app loads child_app at /child_app, this child app will also need to have a copy of the routes registered as /child_app/home. This can be mapped programatically if passing injection token with configuration info.
+- Routes will need to be mapped for any imported apps and kept in sync. E.g. if the main app loads child_app at /child_app, this child app will also need to have a copy of the routes registered as /child_app/home. This can be mapped programmatically if passing injection token with configuration info.
 
 - Any custom `project.json` configuration needs to be duplicated in the parent project. This includes any external style and asset imports
 
