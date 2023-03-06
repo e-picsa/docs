@@ -10,7 +10,7 @@
 # dependencies
 node_modules
 
-# Yarn
+# Yarn (non zero-install)
 .pnp.*
 .yarn/*
 !.yarn/patches
