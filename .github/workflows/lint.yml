@@ -1,6 +1,6 @@
 # Ensure build and tests pass
 
-name: Build Test
+name: Spellcheck and Lint
 on:
   pull_request:
     branches:
@@ -26,6 +26,8 @@ jobs:
           # If source files changed but packages didn't, rebuild from a prior cache.
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
+      - name: Install dependencies
+        run: yarn install --immutable
       - name: Spellcheck
         run: yarn spellcheck
       - name: Lint
