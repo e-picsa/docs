@@ -1,0 +1,105 @@
+# Translations
+
+The app uses [NGX-Translate](https://github.com/ngx-translate/core) to manage translations. See git documentation for full details, or summary docs below
+
+## Setup
+
+In order to work with translations the `PicsaTranslateModule` will need to be imported into the main app, and translation asset files copied using the `project.json`
+
+as well as any component modules (to support lazy loading)
+
+_app.module.ts_
+
+```ts
+import { PicsaTranslateModule } from '@picsa/shared/modules/translate';
+@NgModule({
+  imports: [
+    PicsaTranslateModule.forRoot(),
+  ],
+})
+```
+
+_project.json_
+
+```json
+{
+  "assets": [
+    {
+      "glob": "*.json",
+      "input": "libs/i18n/assets",
+      "output": "assets/i18n"
+    }
+  ]
+}
+```
+
+Additionally any lazy-loaded module should also directly import the shared `PicsaTranslateModule`
+
+_component.module.ts_
+
+```ts
+import { PicsaTranslateModule } from '@picsa/shared/modules/translate';
+@NgModule({
+  imports: [
+    PicsaTranslateModule,
+  ],
+})
+```
+
+## Generate translations
+
+A single command is used to facilitate the process of exporting all strings for translation, and creating translated json from available strings
+
+```sh
+yarn i18n
+```
+
+## Translating Templates
+
+In any `.html` document the `translate` pipe can be used to automatically translate any hardcoded strings
+
+```html
+</span>{{ 'This text will be translated' | translate}}</span>
+<div *ngFor="let item of items">
+  {{item.label | translate}}
+</div>
+```
+
+```ts
+items = [{ label: "hello" }, { label: "goodbye" }];
+```
+
+**Warning**  
+In the looped items example, strings will not automatically be detected for extraction
+See below for method to add translation markers for hardcoded data
+
+### Programmatic translations
+
+All workspace containing translation data should first be listed in `libs\i18n\src\hardcoded\index.ts`.
+This will allow scripts to translate using [ngx-translate-extract(https://github.com/biesbjerg/ngx-translate-extract).
+
+### Marking strings
+
+Any strings not hardcoded with a `{{ ... | translate}}` pipe will need manual intervention for translations.
+This can be done in one of two ways:
+
+1. Using the `marker` utility
+
+_component.ts_
+
+```
+import { marker as translateMarker } from '@biesbjerg/ngx-translate-extract-marker';
+
+items = [{ label: translateMarker("hello") }, { label: translateMarker()"goodbye") }];
+```
+
+2. Creating manual entries
+
+See examples in `libs\i18n\src\hardcoded`
+
+## Updating source translations
+
+Any extracted strings will be translated using source language files located in `libs\i18n\source`.
+Currently these files are manually produced using data stored in a [PICSA Translations Google Sheet](https://docs.google.com/spreadsheets/d/1iIchgMdXmmkSCVGUzNLyCK9hx9fH6kVSssATmbLHzdg/edit?usp=sharing)
+
+These files should be manually updated when new translations available from translators.
