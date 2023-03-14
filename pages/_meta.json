@@ -6,16 +6,10 @@
   "translations": "Translations",
   "design": "Design Manual",
   "troubleshooting": "Troubleshooting",
-  "discussions": {
-    "title": "Discussions ↗",
+  "issues": {
+    "title": "Issues ↗",
     "type": "page",
-    "href": "https://picsa.app",
-    "newWindow": true
-  },
-  "contact": {
-    "title": "Contact ↗",
-    "type": "page",
-    "href": "https://picsa.app",
+    "href": "https://github.com/e-picsa/picsa-apps/issues",
     "newWindow": true
   }
 }

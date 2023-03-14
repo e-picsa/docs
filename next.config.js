@@ -1,15 +1,14 @@
 // @ts-check
 
+const nextraConfig = require("./nextra.config");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: { unoptimized: true },
 };
 
 // @ts-ignore
-const withNextra = require("nextra")({
-  theme: "nextra-theme-docs",
-  themeConfig: "./theme.config.jsx",
-});
+const withNextra = require("nextra")(nextraConfig);
 
 module.exports = {
   ...withNextra(),
