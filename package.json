@@ -2,10 +2,10 @@
   "name": "picsa-docs",
   "license": "See LICENSE",
   "scripts": {
-    "dev": "next dev -p 4001",
     "build": "next build",
     "spellcheck": "yarn cspell .",
     "start": "opener http://localhost:3000 && next dev -p 3000",
+    "start:prod": "next build && next export && npx serve out",
     "lint": "next lint"
   },
   "dependencies": {
