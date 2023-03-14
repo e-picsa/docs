@@ -46,15 +46,9 @@ import { PicsaTranslateModule } from '@picsa/shared/modules/translate';
 })
 ```
 
-## Generate translations
+## Apply Translations
 
-A single command is used to facilitate the process of exporting all strings for translation, and creating translated json from available strings
-
-```sh
-yarn i18n
-```
-
-## Translating Templates
+### Templates
 
 In any `.html` document the `translate` pipe can be used to automatically translate any hardcoded strings
 
@@ -67,18 +61,36 @@ In any `.html` document the `translate` pipe can be used to automatically transl
 
 ```ts
 items = [{ label: "hello" }, { label: "goodbye" }];
+
+constructor(translateService:PicsaTranslateService){
+
+}
 ```
 
 **Warning**  
 In the looped items example, strings will not automatically be detected for extraction
 See below for method to add translation markers for hardcoded data
 
-### Programmatic translations
+### Non-Templates
+
+If the translated string will not be rendered, e.g. as part of an alert of other programmatic api such as setting climate chart title,
+the `PicsaTranslateService` can be used to generate translations
+
+```ts
+import { PicsaTranslateService } from '@picsa/shared/modules';
+
+constructor(translateService:PicsaTranslateService){}
+
+async showAlert(msg:string){
+  const translatedMsg = await this.translateService.translateText(msg)
+  alert(msg)
+}
+```
+
+## Extract Strings
 
 All workspace containing translation data should first be listed in `libs\i18n\src\hardcoded\index.ts`.
 This will allow scripts to translate using [ngx-translate-extract(https://github.com/biesbjerg/ngx-translate-extract).
-
-### Marking strings
 
 Any strings not hardcoded with a `{{ ... | translate}}` pipe will need manual intervention for translations.
 This can be done in one of two ways:
@@ -90,16 +102,23 @@ _component.ts_
 ```
 import { marker as translateMarker } from '@biesbjerg/ngx-translate-extract-marker';
 
-items = [{ label: translateMarker("hello") }, { label: translateMarker()"goodbye") }];
+items = [{ label: translateMarker("hello") }, { label: translateMarker("goodbye") }];
 ```
 
 2. Creating manual entries
 
 See examples in `libs\i18n\src\hardcoded`
 
-## Updating source translations
+## Update Source
 
-Any extracted strings will be translated using source language files located in `libs\i18n\source`.
+A single command is used to facilitate the process of exporting all strings for translation, and creating translated json from available strings
+
+```sh
+yarn i18n
+```
+
+Any extracted strings will be translated using source language files located in `libs\i18n\source`
+
 Currently these files are manually produced using data stored in a [PICSA Translations Google Sheet](https://docs.google.com/spreadsheets/d/1iIchgMdXmmkSCVGUzNLyCK9hx9fH6kVSssATmbLHzdg/edit?usp=sharing)
 
 These files should be manually updated when new translations available from translators.
