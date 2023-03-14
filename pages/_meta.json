@@ -1,25 +1,21 @@
 {
-    "index": "Introduction",
-    "about": "About PICSA",
-    "start": "Getting Started",
-    "structure":"Folder Structure",
-    "applications": "Applications",
-    "design": "Design Manual",
-    "manual": "Development Manual",
-    "testing": "Device Testing",
-    "bundling": "Bundling the Applications",
-    "updating": "Updating Packages",
-    "troubleshooting": "Troubleshooting",
-    "discussions": {
-        "title": "Discussions",
-        "type": "page",
-        "href": "https://picsa.app",
-        "newWindow": true
-    },
-    "contact": {
-        "title": "Contact ↗",
-        "type": "page",
-        "href": "https://picsa.app",
-        "newWindow": true
-    }
+  "index": "Introduction",
+  "setup": "Setup",
+  "applications": "Applications",
+  "advanced": "Advanced",
+  "translations": "Translations",
+  "design": "Design Manual",
+  "troubleshooting": "Troubleshooting",
+  "discussions": {
+    "title": "Discussions ↗",
+    "type": "page",
+    "href": "https://picsa.app",
+    "newWindow": true
+  },
+  "contact": {
+    "title": "Contact ↗",
+    "type": "page",
+    "href": "https://picsa.app",
+    "newWindow": true
+  }
 }
