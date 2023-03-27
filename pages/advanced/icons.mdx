@@ -1,0 +1,73 @@
+# Material Icons
+
+The app uses Material Icons to display SVG icon images.
+Standard icons can be included by importing the `MatIconModule` into the relevant application module and using standard markup
+
+_module.ts_
+
+```ts
+import { MatIconModule } from '@angular/material/icon';
+
+@NgModule({
+  imports: [
+    MatIconModule,
+  ]
+})
+```
+
+_component.html_
+
+```html
+<mat-icon>home</mat-icon>
+```
+
+A full list of available icons can be found at: https://fonts.google.com/icons
+
+Further documentation on available icon API can be found at: https://material.angular.io/components/icon/overview
+
+## Custom Icons
+
+Material icons supports the use of custom icons, however these must be registered in advance of use.
+This can be done by adding a method to the module that imports the icons, e.g.
+
+_module.ts_
+
+```ts
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
+
+@NgModule({
+  imports: [
+    MatIconModule,
+  ]
+})
+
+constructor(
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer
+  ) {
+    this.registerIcons();
+  }
+
+registerIcons() {
+  const CUSTOM_ICONS = {
+    play_store: 'play_store',
+  };
+  for (const [key, value] of Object.entries(RESOURCE_ICONS)) {
+    const iconName = `picsa_${key}`;
+    const iconUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
+      `assets/resources/mat-icons/${value}.svg`
+    );
+    this.matIconRegistry.addSvgIcon(iconName, iconUrl);
+  }
+}
+```
+
+The code above takes a list of `CUSTOM_ICONS`, mapping the filename found in the assets subfolder to the desired icon name.
+All icon names are also prefixed with `picsa_`, so that once imported can be used as:
+
+_component.html_
+
+```html
+<mat-icon svgIcon="picsa_play_store"></mat-icon>
+```
