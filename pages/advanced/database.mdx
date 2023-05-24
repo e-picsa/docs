@@ -1,0 +1,146 @@
+# Database
+
+The app uses [RXDB](https://rxdb.info/quickstart.html) to handle data querying and persistence
+
+## Import
+
+The database module should first be imported into the main app module, calling the `forRoot` method
+
+```ts
+import { PicsaDb_V2_Module } from "@picsa/shared/modules";
+@NgModule({
+  imports: [PicsaDb_V2_Module.forRoot()],
+})
+export class AppModule {}
+```
+
+If the database is used in any child or lazy modules it should be imported regularly
+
+```ts
+import { PicsaDb_V2_Module } from "@picsa/shared/modules";
+@NgModule({
+  imports: [PicsaDb_V2_Module],
+})
+export class LazyModule {}
+```
+
+Once imported the database service can be used to create collections or query data
+
+```ts
+import { PicsaDatabase_V2_Service } from "@picsa/shared/services/core/db_v2";
+
+export class MyService {
+  constructor(private dbService: PicsaDatabase_V2_Service) {}
+}
+```
+
+## Schemas
+
+In order to interact with data we first need to create a schema.
+A utility method exists to support registering schemas
+
+In the example below we create a new database collection which supports entries with `user_name` and `favourite_food` properties
+
+```ts
+// Define schema to represent data
+const schema = {
+    schema: {
+      version: 0,
+      type: "object",
+      properties: {
+        user_name:{
+          type: "string",
+        }
+        favourite_food: {
+          type: "string",
+        }
+      },
+    },
+  }
+// Register schema with database
+await this.dbService.ensureCollections({
+  my_collection:{schema}
+})
+```
+
+For more info, see https://rxdb.info/rx-schema.html
+
+## Querying Data
+
+All data lives in collections. These can be queried using the `find()` method
+
+```ts
+const collection = this.dbService.db.collection["my_collection"];
+const query = collection.find();
+```
+
+Once created a query can either be executed once to return all results, or a live-query created to stream new results whenever they change
+
+```ts
+// snapshot
+this.data = await query.exec();
+
+// or live-query
+query.$.subscribe((v) => (this.data = v));
+```
+
+For more info, see https://rxdb.info/rx-query.html
+
+## Advanced Use
+
+### Type Safety
+
+We can use type interfaces both when registering a collection to ensure all properties are defined
+
+```ts
+import { RxJsonSchema } from 'rxdb';
+
+interface ICollectionEntry {
+  user_name:string;
+  favourite_food:string
+}
+
+// Use the interface above to ensure properties are defined for the schema
+const schema: RxJsonSchema<ICollectionEntry> = {
+    schema: {
+      version: 0,
+      type: "object",
+      properties: {
+        user_name:{
+          type: "string",
+        }
+        favourite_food: {
+          type: "string",
+        }
+      },
+    },
+  }
+```
+
+We can also use typings when accessing a collection for queries
+
+```ts
+const collection = this.dbService.db.collection[
+  "my_collection"
+] as RxCollection<ICollectionEntry>;
+
+// query will autocomplete to provide properties from the collection
+this.data = await collection
+  .find({ selector: { favourite_food: { $eq: "pizza" } } })
+  .exec();
+```
+
+### Migrations
+
+(todo)
+
+- Ensure schema name versioned
+- Keep all schemas in codebase
+- Add migration functions
+
+### Avoiding data leaks
+
+(todo)
+
+- Unsubscribe live-queries
+  https://blog.bitsrc.io/6-ways-to-unsubscribe-from-observables-in-angular-ab912819a78f
