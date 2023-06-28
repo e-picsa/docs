@@ -1,0 +1,31 @@
+## Prerequisites
+
+- Docker
+
+See caveats in
+https://supabase.com/docs/guides/self-hosting/docker
+
+- Deno (if working on edge functions)
+
+Extensions
+https://marketplace.visualstudio.com/items?itemName=denoland.vscode-deno
+
+Env
+
+```
+yarn nx run picsa-server:start
+```
+
+## Generating types
+
+```
+deno run --allow-env --allow-read --allow-run --allow-write scripts/gen-types.ts
+```
+
+Output can be copied to file or (on linux) piped via `> apps/picsa-server/types/supabase.ts`
+
+## Functions
+
+### Runtime Limitations
+
+(sandboxed, no fs) - see full list of replacements

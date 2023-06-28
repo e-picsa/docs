@@ -89,36 +89,53 @@ async showAlert(msg:string){
 
 ## Extract Strings
 
-All workspace containing translation data should first be listed in `libs\i18n\src\hardcoded\index.ts`.
+Any workspaces containing translation data should first be listed in `libs\i18n\src\hardcoded\index.ts`.
 This will allow scripts to translate using [ngx-translate-extract(https://github.com/biesbjerg/ngx-translate-extract).
 
-Any strings not hardcoded with a `{{ ... | translate}}` pipe will need manual intervention for translations.
-This can be done in one of two ways:
+All strings marked with the translate pipe `{{ ... | translate}}` will automatically be extracted
 
-1. Using the `marker` utility
+Any text that is not marked with a translate pipe will need to be manually marked using the `translateMarker` utility
 
 _component.ts_
 
 ```ts
-import { marker as translateMarker } from '@biesbjerg/ngx-translate-extract-marker';
+import { marker as translateMarker } from "@biesbjerg/ngx-translate-extract-marker";
 
-items = [{ label: translateMarker("hello") }, { label: translateMarker("goodbye") }];
+items = [
+  { label: translateMarker("hello") },
+  { label: translateMarker("goodbye") },
+];
 ```
 
-2. Creating manual entries
+## Extract Source
 
-See examples in `libs\i18n\src\hardcoded`
-
-## Update Source
-
-A single command is used to facilitate the process of exporting all strings for translation, and creating translated json from available strings
+Once translations have been marked they need to be extracted to send to translators. This can be done by the following script
 
 ```sh
 yarn i18n
 ```
 
-Any extracted strings will be translated using source language files located in `libs\i18n\source`
+Any extracted strings will be populated to template files located in `libs\i18n\templates`, to share with translators.  
+Currently this process is managed manually using [PICSA Translations Google Sheet](https://docs.google.com/spreadsheets/d/1iIchgMdXmmkSCVGUzNLyCK9hx9fH6kVSssATmbLHzdg/edit?usp=sharing)
 
-Currently these files are manually produced using data stored in a [PICSA Translations Google Sheet](https://docs.google.com/spreadsheets/d/1iIchgMdXmmkSCVGUzNLyCK9hx9fH6kVSssATmbLHzdg/edit?usp=sharing)
+## Update Translations
 
-These files should be manually updated when new translations available from translators.
+Once updated translations have been returned, instructions should be followed from the Google Sheet to populate json files in the `libs\i18n\source` folder
+
+Finally developers can populate app translation assets from the source files using the same script as extraction, i.e.
+
+```sh
+yarn i18n
+```
+
+## Preview Translations
+
+Whilst awaiting updates from translators it is still possible to view all text pending translation
+(i.e. text that has been correctly configured for translation)
+
+First ensure all translations have been updated via the `yarn i18n` command  
+Then run the app locally and specify the `Global - Translators` configuration
+
+All text marked for translation will be indicated by `•{text}•`, e.g.
+
+![](./translations-preview.png)
