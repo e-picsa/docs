@@ -58,3 +58,28 @@ https://capacitorjs.com/docs/android
 
 There is also a dedicated troubleshooting page available at:
 https://capacitorjs.com/docs/android/troubleshooting
+
+A few other specific issues are outlined below:
+
+#### Webcomponents
+
+There may be issue bundling webcomponents when running on device server.
+The current workaround is simply to temporarily disable the custom elements, by commenting out the `defineCustomElements` declarations
+
+```ts {4,8} showLineNumbers filename="libs/webcomponents-ngx/src/lib/webcomponents-ngx.module.ts"
+import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+// Import and register all custom elements for the module
+// import { defineCustomElements } from '@picsa/webcomponents/loader';
+
+import { DIRECTIVES } from "./generated";
+
+// defineCustomElements(window);
+
+@NgModule({
+  imports: [CommonModule],
+  declarations: [...DIRECTIVES],
+  exports: [...DIRECTIVES],
+})
+export class WebcomponentsNgxModule {}
+```
