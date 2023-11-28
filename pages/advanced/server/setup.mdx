@@ -1,31 +1,139 @@
+# Server
+
 ## Prerequisites
 
-- Docker
+- Docker Desktop
+- [Deno](https://docs.deno.com/runtime/manual/getting_started/installation)
+- [Deno VSCode Extension](https://marketplace.visualstudio.com/items?itemName=denoland.vscode-deno)
 
-See caveats in
-https://supabase.com/docs/guides/self-hosting/docker
+## Quickstart
 
-- Deno (if working on edge functions)
+### Start Server
 
-Extensions
-https://marketplace.visualstudio.com/items?itemName=denoland.vscode-deno
-
-Env
-
-```
-yarn nx run picsa-server:start
+```sh
+yarn start:server
 ```
 
-## Generating types
+This will start various backend services within docker containers
+
+API URL: http://localhost:54321
+GraphQL URL: http://localhost:54321/graphql/v1
+DB URL: postgresql://postgres:postgres@localhost:54322/postgres  
+Studio URL: http://localhost:54323
+Inbucket URL: http://localhost:54324
+
+Update Frontend
+The console will output an `anon key` which should be populated in the frontend supabase environment
+`libs\environments\src\environment.ts`
+
+### Create User
+
+In order to allow communication from unauthenticated users to the database a custom anonymous user
+should be created from the studio dashboard with credentials:
+
+http://localhost:54323/project/default/auth/users
+
+email: `anonymous_user@picsa.app`
+password: `anonymous_user@picsa.app`
+
+Ensure **Auto Confirm** is checked
+
+## Advanced Usage
+
+### Populate DB
+
+```sh
+yarn nx run picsa-server:supabase db reset
+```
+
+### Serve Functions
+
+If developing functions locally run via
+
+```sh
+yarn nx run picsa-server:supabase functions serve
+```
+
+Functions can be called from any rest client.
+
+Authorization credentials should be provided using the service_role key output when server started or by calling `nx run picsa-server:supabase status`
+
+https://supabase.com/docs/guides/functions/local-development
+
+**Test Functions**
+
+Whilst serving functions tests can be executed by
+
+```sh
+yarn nx run picsa-server:test-functions
+```
+
+In order to run tests that connect to supabase an additional `.env.local` file should be populated in the the functions directory with SUPABASE_ANON_KEY credentials
+
+Tests are written using the [Behavior-Driven Development](https://docs.deno.com/runtime/manual/basics/testing/behavior_driven_development) module
+
+Functions cli supports [additional arguments](https://fig.io/manual/deno/test) such as `--watch`
+
+```sh
+yarn nx run picsa-server:test-functions --watch
+```
+
+### Export DB Type Generation
+
+```sh
+yarn nx run picsa-server:gen-types
+```
+
+or from the console http://localhost:54323/project/default/api?page=tables-intro
+
+https://supabase.com/docs/guides/api/rest/generating-types
+
+### Link to server
 
 ```
-deno run --allow-env --allow-read --allow-run --allow-write scripts/gen-types.ts
+yarn nx run picsa-server:supabase link --project-ref [ref]
 ```
 
-Output can be copied to file or (on linux) piped via `> apps/picsa-server/types/supabase.ts`
+### Pull server db
 
-## Functions
+```sh
+supabase db pull
+```
 
-### Runtime Limitations
+### DB Migrations
 
-(sandboxed, no fs) - see full list of replacements
+```sh
+yarn nx run picsa-server:supabase migration new create_monitoring_submissions
+```
+
+This will populate a new sql file in the `migrations` folder
+Update the sql as required and update local db
+
+```
+
+```
+
+# Troubleshooting
+
+**`supabase link` fails - timeout**
+
+- Check dashboard and ensure ip not panned
+- Pass password as var
+
+```
+supabase link --project-ref [ref] --password [pass]
+```
+
+**Relative import path "@supabase/supabase-js" not prefixed**
+Any Imports have to be defined both in `import-map.json` file
+
+**Ports are not available: exposing port TCP 0.0.0.0:54322 -> 0.0.0.0:0: listen tcp 0.0.0.0:54322: bind: An attempt was made to access a socket in a way forbidden by its access permissions**
+Windows reserves some of the same ports that supabase uses. Either the supabase ports can be modified from the `config.toml` file, or windows updated to change restricted port ranges
+
+https://stackoverflow.com/a/71190107/5693245
+https://github.com/supabase/cli/issues/189
+
+# Links
+
+- https://supabase.com/blog/supabase-local-dev
+- https://supabase.github.io/pg_graphql/computed_fields/
