@@ -19,17 +19,24 @@ yarn start:server
 
 This will start various backend services within docker containers
 
-API URL: http://localhost:54321
-GraphQL URL: http://localhost:54321/graphql/v1
-DB URL: postgresql://postgres:postgres@localhost:54322/postgres  
-Studio URL: http://localhost:54323
-Inbucket URL: http://localhost:54324
+| Feature     | URI |
+| ----------- | ----------- |
+| Studio      | http://localhost:54323         |
+| API         | http://localhost:54321        |
+| DB          | postgresql://postgres:postgres@localhost:54322/postgres           |
+| GraphQL     | http://localhost:54321/graphql/v1         |
+| Inbucket    | http://localhost:54324         |
+ 
 
-**Update Frontend**   
-The console will output an `anon key` which should be populated in the frontend supabase environment
-`libs\environments\src\supabase\config.json`
+**Frontend Config**   
+In order for frontend apps to communicate with the server an `anon key` created by the server must be populated to local configuration.
 
-This will allow frontend code to interact with the local development server
+This key can be found in the console when the server starts, or by running the script
+```sh
+yarn nx run picsa-server:supabase status
+```
+This key should be populated to `libs\environments\src\supabase\config.json`
+
 
 ### Create User
 
@@ -114,11 +121,7 @@ yarn nx run picsa-server:supabase migration new create_monitoring_submissions
 This will populate a new sql file in the `migrations` folder
 Update the sql as required and update local db
 
-```
-
-```
-
-# Troubleshooting
+## Troubleshooting
 
 **`supabase link` fails - timeout**
 
@@ -138,7 +141,7 @@ Windows reserves some of the same ports that supabase uses. Either the supabase 
 https://stackoverflow.com/a/71190107/5693245
 https://github.com/supabase/cli/issues/189
 
-# Links
+## Links
 
 - https://supabase.com/blog/supabase-local-dev
 - https://supabase.github.io/pg_graphql/computed_fields/
