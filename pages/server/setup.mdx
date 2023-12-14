@@ -1,8 +1,11 @@
 # Server
+The server backend is built on top of [Supabase](https://supabase.com/docs), which provides infrastructure for database, file storage, user authentication, serverless functions and more. 
+
+Local development requires running a self-managed supabase instance using docker containers.
+Serverless functions are run using a Deno runtime environment
 
 ## Prerequisites
-
-- Docker Desktop
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
 - [Deno](https://docs.deno.com/runtime/manual/getting_started/installation)
 - [Deno VSCode Extension](https://marketplace.visualstudio.com/items?itemName=denoland.vscode-deno)
 
@@ -22,9 +25,11 @@ DB URL: postgresql://postgres:postgres@localhost:54322/postgres
 Studio URL: http://localhost:54323
 Inbucket URL: http://localhost:54324
 
-*Update Frontend*
+**Update Frontend**   
 The console will output an `anon key` which should be populated in the frontend supabase environment
 `libs\environments\src\supabase\config.json`
+
+This will allow frontend code to interact with the local development server
 
 ### Create User
 

@@ -5,6 +5,5 @@
   "testing": "Device Testing",
   "bundling": "Bundling the Applications",
   "updating": "Updating Packages",
-  "database": "Database",
-  "server": "Server"
+  "database": "Database"
 }
