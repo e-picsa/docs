@@ -18,6 +18,7 @@
     "e-picsa",
     "e2e",
     "enketo",
+    "inbucket",
     "jetify",
     "leafletjs",
     "logcat",
@@ -36,8 +37,10 @@
     "svgs",
     "qgis",
     "qmetatiles",
+    "quickstart",
     "topojson",
     "webcomponent",
+    "webcomponents",
     "webp"
   ],
   "flagWords": []
