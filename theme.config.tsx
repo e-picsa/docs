@@ -2,7 +2,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import { useConfig } from "nextra-theme-docs";
 import type { DocsThemeConfig } from "nextra-theme-docs";
-import { version } from "./package.json";
+import packageJson from "./package.json";
 
 /**
  * Nextra Theme Configuration
@@ -54,7 +54,7 @@ const themeConfig: DocsThemeConfig = {
             PICSA
           </a>
         </span>
-        <span style={{ marginLeft: "auto" }}>v{version}</span>
+        <span style={{ marginLeft: "auto" }}>v{packageJson.version}</span>
       </>
     ),
   },
