@@ -1,6 +1,7 @@
 {
   "name": "picsa-docs",
   "license": "See LICENSE",
+  "version": "1.0.1",
   "scripts": {
     "build": "next build",
     "spellcheck": "yarn cspell .",
