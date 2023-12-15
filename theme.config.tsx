@@ -2,6 +2,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import { useConfig } from "nextra-theme-docs";
 import type { DocsThemeConfig } from "nextra-theme-docs";
+import { version } from "./package.json";
 
 /**
  * Nextra Theme Configuration
@@ -46,13 +47,15 @@ const themeConfig: DocsThemeConfig = {
   },
   footer: {
     text: (
-      <span>
-        Copyright {new Date().getFullYear()} ©{" "}
-        <a href="https://picsa.app" target="_blank" rel="noopener noreferrer">
-          PICSA
-        </a>
-        .
-      </span>
+      <>
+        <span>
+          Copyright {new Date().getFullYear()} ©{" "}
+          <a href="https://picsa.app" target="_blank" rel="noopener noreferrer">
+            PICSA
+          </a>
+        </span>
+        <span style={{ marginLeft: "auto" }}>v{version}</span>
+      </>
     ),
   },
   sidebar: {
