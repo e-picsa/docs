@@ -1,0 +1,39 @@
+# Functions
+
+(WiP Docs)
+
+## Prerequisites
+- [Deno](https://docs.deno.com/runtime/manual/getting_started/installation)
+- [Deno VSCode Extension](https://marketplace.visualstudio.com/items?itemName=denoland.vscode-deno)
+
+## Serve Functions
+
+If developing functions locally run via
+
+```sh
+yarn nx run picsa-server:supabase functions serve
+```
+
+Functions can be called from any rest client.
+
+Authorization credentials should be provided using the service_role key output when server started or by calling `nx run picsa-server:supabase status`
+
+https://supabase.com/docs/guides/functions/local-development
+
+**Test Functions**
+
+Whilst serving functions tests can be executed by
+
+```sh
+yarn nx run picsa-server:test-functions
+```
+
+In order to run tests that connect to supabase an additional `.env.local` file should be populated in the the functions directory with SUPABASE_ANON_KEY credentials
+
+Tests are written using the [Behavior-Driven Development](https://docs.deno.com/runtime/manual/basics/testing/behavior_driven_development) module
+
+Functions cli supports [additional arguments](https://fig.io/manual/deno/test) such as `--watch`
+
+```sh
+yarn nx run picsa-server:test-functions --watch
+```

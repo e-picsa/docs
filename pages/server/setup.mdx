@@ -6,8 +6,6 @@ Serverless functions are run using a Deno runtime environment
 
 ## Prerequisites
 - [Docker Desktop](https://www.docker.com/products/docker-desktop)
-- [Deno](https://docs.deno.com/runtime/manual/getting_started/installation)
-- [Deno VSCode Extension](https://marketplace.visualstudio.com/items?itemName=denoland.vscode-deno)
 
 ## Quickstart
 
@@ -50,87 +48,14 @@ password: `anonymous_user@picsa.app`
 
 Ensure **Auto Confirm** is checked
 
-## Advanced Usage
 
-### Populate DB
-
+### Stop Server
+When no longer in use the server can be stopped by either stopping the container running in docker desktop, or by command
 ```sh
-yarn nx run picsa-server:supabase db reset
+yarn nx run picsa-server:supabase stop
 ```
-
-### Serve Functions
-
-If developing functions locally run via
-
-```sh
-yarn nx run picsa-server:supabase functions serve
-```
-
-Functions can be called from any rest client.
-
-Authorization credentials should be provided using the service_role key output when server started or by calling `nx run picsa-server:supabase status`
-
-https://supabase.com/docs/guides/functions/local-development
-
-**Test Functions**
-
-Whilst serving functions tests can be executed by
-
-```sh
-yarn nx run picsa-server:test-functions
-```
-
-In order to run tests that connect to supabase an additional `.env.local` file should be populated in the the functions directory with SUPABASE_ANON_KEY credentials
-
-Tests are written using the [Behavior-Driven Development](https://docs.deno.com/runtime/manual/basics/testing/behavior_driven_development) module
-
-Functions cli supports [additional arguments](https://fig.io/manual/deno/test) such as `--watch`
-
-```sh
-yarn nx run picsa-server:test-functions --watch
-```
-
-### Export DB Type Generation
-
-```sh
-yarn nx run picsa-server:gen-types
-```
-
-or from the console http://localhost:54323/project/default/api?page=tables-intro
-
-https://supabase.com/docs/guides/api/rest/generating-types
-
-### Link to server
-
-```
-yarn nx run picsa-server:supabase link --project-ref [ref]
-```
-
-### Pull server db
-
-```sh
-supabase db pull
-```
-
-### DB Migrations
-
-```sh
-yarn nx run picsa-server:supabase migration new create_monitoring_submissions
-```
-
-This will populate a new sql file in the `migrations` folder
-Update the sql as required and update local db
 
 ## Troubleshooting
-
-**`supabase link` fails - timeout**
-
-- Check dashboard and ensure ip not panned
-- Pass password as var
-
-```
-supabase link --project-ref [ref] --password [pass]
-```
 
 **Relative import path "@supabase/supabase-js" not prefixed**
 Any Imports have to be defined both in `import-map.json` file
