@@ -66,6 +66,18 @@ Windows reserves some of the same ports that supabase uses. Either the supabase 
 https://stackoverflow.com/a/71190107/5693245
 https://github.com/supabase/cli/issues/189
 
+**Server restart fails (corrupted server)**
+If the server stops working it may need a clean restart
+
+```sh
+yarn nx run picsa-server:supabase stop --no-backup
+```
+This will stop the running container but not persist any data
+
+```sh
+yarn nx run picsa-server:supabase start
+```
+
 ## Links
 
 - https://supabase.com/blog/supabase-local-dev
