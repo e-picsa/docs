@@ -1,0 +1,47 @@
+import { Callout } from "nextra-theme-docs";
+
+# Data Sharing
+
+Many of the apps and tools need to share data which would ordinarily be hardcoded into the app.
+An example of this is the list of crops used for budget, crop-probability and seasonal calendar tools.
+
+In order to facilitate data sharing across apps, a specific `libs/data` workspace has been created which can be imported across apps.
+
+## Data with Icons
+
+Much of the shared data includes lists to icons that may be used within UI components.
+
+Typically these icons would need to be registered within the custom mat-icon registry on a per-app base,
+however utility methods have been included to reduce the steps required to include:
+
+**1. Make data svg icons available to the app**
+
+E.g. if using the `weather` data, the corresponding svgs can be imported as follows into the app `project.json` filename
+
+```json
+{ "glob": "*.svg", "input": "libs/data/weather/svgs", "output": "assets/svgs/weather" },
+```
+
+**2. Register the icons for use with `mat-icon`**
+
+```ts
+import { DataIconRegistry } from '@picsa/data';
+
+constructor(dataIconRegistry: DataIconRegistry){
+ dataIconRegistry.registerMatIcons('weather');
+}
+```
+
+**3. Use within components**
+
+```html
+<mat-icon svgIcon="picsa_weather_rain" />
+```
+
+---
+
+<Callout emoji="💡">
+  **Tip** If icons have not been imported you should see a helpful console error
+  to inform of missing imports
+</Callout>
+![](./images/data-sharing-error.png)

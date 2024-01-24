@@ -4,9 +4,11 @@ Supabase manages a Postgres database, accessible via the studio
 https://supabase.com/docs/guides/database/overview
 
 ## Bootstrap
+
 The database schema is defined within migration files that can be used both to bootstrap the database for first use, and to apply ongoing updates as required.
 
 To fully initialise a clean database (wipe existing data and changes), use the db reset command.
+
 ```sh
 yarn nx run picsa-server:supabase db reset
 ```
@@ -16,12 +18,12 @@ To partially apply only new migrations (keep existing data and changes)
 ```sh
 yarn nx run picsa-server:supabase migration up
 ```
- 
 
 ## Create tables
 
 ### Generate new table
-This can be achieved interactively using the supabase studio (assumed running locally)   
+
+This can be achieved interactively using the supabase studio (assumed running locally)  
 http://localhost:54323/project/default/editor
 
 ![](./images/db-table-create.png)
@@ -37,6 +39,7 @@ Using the interactive interface define data columns for your table
 ![](./images/db-table-columns.png)
 
 ### Export definition
+
 Once a table has been created, the definition needs to be stored to enable recreation on bootstrap and update.
 
 1. Create a migration file to store the definition update.
@@ -46,20 +49,22 @@ yarn nx run picsa-server:supabase migration new [migration_name]
 ```
 
 Providing a clear name for the migration. E.g. if creating a new table to store `users`:
+
 ```sh
 yarn nx run picsa-server:supabase migration new users_table_create
 ```
 
 This will populate a new file to `apps\picsa-server\supabase\migrations`.
 
-2. Copy the table definition to the migration 
-The definition can be found in the UI using the `Definition` tab in the top-right corner 
+2. Copy the table definition to the migration
+   The definition can be found in the UI using the `Definition` tab in the top-right corner
 
 ![](./images/db-definition.png)
 
 ## Advanced
 
 ### Generate DB types
+
 Typescript type definitions can be generated from tables to use within application code.
 
 ```sh
@@ -71,15 +76,17 @@ This will populate types to the `apps\picsa-server\supabase\types` folder.
 These types can be imported in frontend code from the linked `@picsa/server-types` package, e.g.
 
 ```ts
-import type { Database } from '@picsa/server-types';
+import type { Database } from "@picsa/server-types";
 ```
+
 Specific table definitions can be accessed from the types, e.g. the `users` table row definition would be available via
 
 ```ts
-type IUserRow = Database['public']['Tables']['users']['Row'];
+type IUserRow = Database["public"]["Tables"]["users"]["Row"];
 ```
 
 ### Pull server db
+
 Changes from production server db can be pulled locally
 
 First the local server must be linked to the production instance, using the production server id (ref)
@@ -94,16 +101,15 @@ Once linked, remote db schema can be pulled
 supabase db pull
 ```
 
-
-
-
 ## Troubleshooting
 
 **`supabase link` fails - timeout**
 
-- Check dashboard and ensure ip not panned
+- Check dashboard and ensure ip not banned
+- Use supabase cli directly
 - Pass password as var
 
-```
+```sh
+cd apps/picsa-server
 supabase link --project-ref [ref] --password [pass]
 ```

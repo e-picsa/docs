@@ -61,6 +61,22 @@ https://capacitorjs.com/docs/android/troubleshooting
 
 A few other specific issues are outlined below:
 
+#### Android Emulator Crashes
+
+If the emulator is crashing during operation view the android studio logcat logs and try to debug error messages on stackoverflow.
+
+If the emulator crashes during startup (with no log messages shown) recommended troubelshooting steps:
+
+- Ensure you have the latest version of the emulator SDK installed from Android Studio
+- Try running emulator from command line with verbose logging and without Vulkan UI
+
+```sh
+ emulator -avd "Pixel_API_33" -verbose -show-kernel -feature -Vulkan
+```
+
+- Review troubleshooting advice at: https://developer.android.com/studio/run/emulator-troubleshooting
+- Review issues raised at: https://issuetracker.google.com/issues?q=componentid:192727
+
 #### Webcomponents
 
 There may be issue bundling webcomponents when running on device server.

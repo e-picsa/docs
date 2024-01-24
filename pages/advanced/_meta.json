@@ -1,5 +1,6 @@
 {
   "assets": "Assets",
+  "data-sharing": "Data Sharing",
   "icons": "Material Icons",
   "nx-generators": "NX Generators",
   "testing": "Device Testing",
