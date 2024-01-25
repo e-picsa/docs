@@ -2,27 +2,35 @@ import { Callout } from "nextra-theme-docs";
 
 # Data Sharing
 
-Many of the apps and tools need to share data which would ordinarily be hardcoded into the app.
-An example of this is the list of crops used for budget, crop-probability and seasonal calendar tools.
+The `libs/data` library should be used for any hardcoded data that needs to be used across multiple apps,
 
-In order to facilitate data sharing across apps, a specific `libs/data` workspace has been created which can be imported across apps.
+E.g. the budget, crop-probability and seasonal calendar tools all include lists of crops.
+
+![](./images/data-sharing-example.png)
 
 ## Data with Icons
 
-Much of the shared data includes lists to icons that may be used within UI components.
+Any file assets linked from data will also need to be manually imported into projects, using the `project.json`
+to copy assets into local build and referencing from the `MatIconRegistry`
 
-Typically these icons would need to be registered within the custom mat-icon registry on a per-app base,
-however utility methods have been included to reduce the steps required to include:
+Further documentation exists for [Sharing Assets](./assets.mdx) and [Custom Icons](./icons.mdx), although
+the data lib also contains utility methods to simplify the process.
 
-**1. Make data svg icons available to the app**
+### Import assets
 
-E.g. if using the `weather` data, the corresponding svgs can be imported as follows into the app `project.json` filename
+Assest related to a specific set of data should be placed in a nested child folder,
+e.g. svg icons related to weather data are placed in `libs/data/weather/svgs`
+
+These folders should then be remapped to the project asset folder, using the `assets/svgs` folder by convention, i.e.
 
 ```json
 { "glob": "*.svg", "input": "libs/data/weather/svgs", "output": "assets/svgs/weather" },
 ```
 
-**2. Register the icons for use with `mat-icon`**
+### Register custom mat-icons
+
+A utility `DataIconRegistry` service has been created to facilitate the process of registering custom mat icons,
+simply import the service and specify the set of data icons for registration
 
 ```ts
 import { DataIconRegistry } from '@picsa/data';
@@ -32,7 +40,8 @@ constructor(dataIconRegistry: DataIconRegistry){
 }
 ```
 
-**3. Use within components**
+All icons will be prefixed by `picsa_` and the name of the dataset, e.g. `weather`.
+These can be referenced from frontend code using the `svgIcon` identifier. E.g. `rain` icon:
 
 ```html
 <mat-icon svgIcon="picsa_weather_rain" />
