@@ -4,17 +4,20 @@ import { Callout } from "nextra-theme-docs";
 
 The `libs/data` library should be used for any hardcoded data that needs to be used across multiple apps,
 
-E.g. the budget, crop-probability and seasonal calendar tools all include lists of crops.
-
 ![](./images/data-sharing-example.png)
+
+_Example: Budget, Crop Probability and Seasonal Calendar tools all include lists of crops_
 
 ## Data with Icons
 
 Any file assets linked from data will also need to be manually imported into projects, using the `project.json`
 to copy assets into local build and referencing from the `MatIconRegistry`
 
-Further documentation exists for [Sharing Assets](./assets.mdx) and [Custom Icons](./icons.mdx), although
-the data lib also contains utility methods to simplify the process.
+<Callout emoji="💡">
+  **Tip** The documentation on [Assets](./assets.mdx) and [Material
+  Icons](./icons.mdx) goes into more detail on this, however the data lib
+  contains utility methods to simplify the process.
+</Callout>
 
 ### Import assets
 
