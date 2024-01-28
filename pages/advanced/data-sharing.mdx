@@ -43,11 +43,11 @@ constructor(dataIconRegistry: DataIconRegistry){
 }
 ```
 
-All icons will be prefixed by `picsa_` and the name of the dataset, e.g. `weather`.
+All icons will be added to a namespace prefixed by `picsa`, e.g. `picsa_weather`.
 These can be referenced from frontend code using the `svgIcon` identifier. E.g. `rain` icon:
 
 ```html
-<mat-icon svgIcon="picsa_weather_rain" />
+<mat-icon svgIcon="picsa_weather:rain" />
 ```
 
 ---
