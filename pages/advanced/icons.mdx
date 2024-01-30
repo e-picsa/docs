@@ -1,3 +1,5 @@
+import { Callout } from "nextra-theme-docs";
+
 # Material Icons
 
 The app uses Material Icons to display SVG icon images.
@@ -50,24 +52,28 @@ constructor(
   }
 
 registerIcons() {
-  const CUSTOM_ICONS = {
-    play_store: 'play_store',
-  };
-  for (const [key, value] of Object.entries(RESOURCE_ICONS)) {
-    const iconName = `picsa_${key}`;
-    const iconUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
-      `assets/resources/mat-icons/${value}.svg`
+  const RESOURCE_ICONS = ['play_store']
+
+  for (const iconName of RESOURCE_ICONS) {
+    const url = this.domSanitizer.bypassSecurityTrustResourceUrl(
+      `assets/resources/svgs/${iconName}.svg`
     );
-    this.matIconRegistry.addSvgIcon(iconName, iconUrl);
+    this.matIconRegistry.addSvgIconInNamespace('resources_tool',iconName, url);
   }
 }
 ```
 
-The code above takes a list of `CUSTOM_ICONS`, mapping the filename found in the assets subfolder to the desired icon name.
-All icon names are also prefixed with `picsa_`, so that once imported can be used as:
+<Callout emoji="💡">
+  **Tip** When registering custom icons it is good to use a namespace so that
+  icons with the same name do not conflict (think of 'clear' weather vs 'clear'
+  form input)
+</Callout>
+
+The code above takes a list of icons, with corresponding svg asset.
+All icon names are registered in the `resources_tool` namespace to be used as:
 
 _component.html_
 
 ```html
-<mat-icon svgIcon="picsa_play_store"></mat-icon>
+<mat-icon svgIcon="resources_tool:play_store"></mat-icon>
 ```
