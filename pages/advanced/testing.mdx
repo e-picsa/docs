@@ -1,3 +1,5 @@
+import { Callout } from "nextra-theme-docs";
+
 # Device Testing
 
 ### Getting Started
@@ -25,7 +27,7 @@ Run the app from android studio either on an emulator or physical device
 
 The app should live reload both on local network and device
 
-**Wireless Debugging**
+**Wireless Debugging**  
 The above method will only work if the device is physically connected to the same computer running the development server.
 If using wireless debugging you will need to additionally specify your own local adapter IP address. This should usually be in the form:
 `192.xxx.xx.xx`
@@ -36,7 +38,10 @@ Create an environment variable override file `apps/picsa-apps/extension-app-nati
 SERVER_URL=http://192.xxx.xx.xx:4200
 ```
 
-On windows you can check your ip via `ip config` and look for `IPv4` address for your internet adapter
+<Callout emoji="💡">
+  **Tip** On windows you can check your ip via command `ip config` and look for
+  `IPv4` address for your internet adapter
+</Callout>
 
 ### Inspecting Logs
 
