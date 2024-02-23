@@ -11,33 +11,32 @@ You will also need to populate a relevant `google-services.json` file, available
 
 ### Running on a device
 
-To run on a device with live-reload first configure a local server to connect
-You will need to determine your local adapter IP, uncomment and replace config in
-`apps\picsa-apps\extension-app-native\capacitor.config.ts`
-
-```ts
-/** Uncomment and replace with local ip to serve live-reload */
-
-// url: 'http://192.168.50.67:4200',
-```
-
-(on windows you can check your ip via `ip config` and look for `IPv4` address for your internet adapter)
-
-Sync the changes to capacitor via the project build script.
+In order to run a local app on a native (or emulator) device with live-reload support both the device and local server need custom configuration.
+A utility script is included to help automate this process
 
 ```sh
-yarn nx run picsa-apps-extension-app-native:build
+yarn nx run picsa-apps-extension-app-native:serve
 ```
 
-Start the local server via the `external` configuration defined in `apps\picsa-apps\extension-app\project.json`
-
-```sh
-yarn nx run picsa-apps-extension-app:serve --configuration=external
-```
+This will first create a custom build of the code with set to look for code served at the device external address `http://0.0.0.0:4200`,
+and then also instruct the angular compiler to serve code available at the same address.
 
 Run the app from android studio either on an emulator or physical device
 
 The app should live reload both on local network and device
+
+**Wireless Debugging**
+The above method will only work if the device is physically connected to the same computer running the development server.
+If using wireless debugging you will need to additionally specify your own local adapter IP address. This should usually be in the form:
+`192.xxx.xx.xx`
+
+Create an environment variable override file `apps/picsa-apps/extension-app-native/.env.local`, and provide as a `SERVER_URL` variable with the full url, e.g.
+
+```sh
+SERVER_URL=http://192.xxx.xx.xx:4200
+```
+
+On windows you can check your ip via `ip config` and look for `IPv4` address for your internet adapter
 
 ### Inspecting Logs
 
