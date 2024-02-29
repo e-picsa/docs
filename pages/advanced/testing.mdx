@@ -14,34 +14,50 @@ You will also need to populate a relevant `google-services.json` file, available
 ### Running on a device
 
 In order to run a local app on a native (or emulator) device with live-reload support both the device and local server need custom configuration.
-A utility script is included to help automate this process
 
-```sh
-yarn nx run picsa-apps-extension-app-native:serve
-```
+Create a file at `apps/picsa-apps/extension-app-native/.env.local` and provide a `SERVER_URL` to match your local ipv4 address for the angular server.
 
-This will first create a custom build of the code with set to look for code served at the device external address `http://0.0.0.0:4200`,
-and then also instruct the angular compiler to serve code available at the same address.
-
-Run the app from android studio either on an emulator or physical device
-
-The app should live reload both on local network and device
-
-**Wireless Debugging**  
-The above method will only work if the device is physically connected to the same computer running the development server.
-If using wireless debugging you will need to additionally specify your own local adapter IP address. This should usually be in the form:
-`192.xxx.xx.xx`
-
-Create an environment variable override file `apps/picsa-apps/extension-app-native/.env.local`, and provide as a `SERVER_URL` variable with the full url, e.g.
+This should usually be in the form: `192.xxx.xx.xx`, and append `:4200` port for the angular server.
 
 ```sh
 SERVER_URL=http://192.xxx.xx.xx:4200
 ```
 
 <Callout emoji="💡">
-  **Tip** On windows you can check your ip via command `ip config` and look for
-  `IPv4` address for your internet adapter
+  **Tip** <br></br>On windows you can check your ip via command `ip config` and look
+  for `IPv4` address for your internet adapter
 </Callout>
+
+Now run the utility script to update the app config and start the app server
+
+```sh
+yarn nx run picsa-apps-extension-app-native:serve
+```
+
+Run the app from android studio either on an emulator or physical device
+
+The app should live reload both on local network and device
+
+#### Troubleshooting
+
+If the app shows a **Web Page Not Available** screen then should first check the app is running locally.
+This can be done by visiting the url you specified in your local web browser, e.g. http://192.xxx.xx.xx:4200.
+
+If the app is running in a local browser then you should check that the SERVER_URL has populated as expected.
+You can do this by checking the generated file at  
+`apps\picsa-apps\extension-app-native\android\app\src\main\assets\capacitor.config.json`
+
+The output should include a block with the url specified from your environment file
+
+```json
+"server": {
+		"androidScheme": "http",
+		"cleartext": true,
+		"url": "http://192.xxx.xx.x:4200"
+	}
+```
+
+If the json configuration is as expected it may just be a case of reloading the app. If still not working seek out support.
 
 ### Inspecting Logs
 
