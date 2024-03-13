@@ -19,6 +19,12 @@ To partially apply only new migrations (keep existing data and changes)
 yarn nx run picsa-server:supabase migration up
 ```
 
+To populate initial seed data run the following command
+
+```sh
+yarn nx run picsa-server:seed
+```
+
 ## Create tables
 
 ### Generate new table
@@ -60,6 +66,19 @@ This will populate a new file to `apps\picsa-server\supabase\migrations`.
    The definition can be found in the UI using the `Definition` tab in the top-right corner
 
 ![](./images/db-definition.png)
+
+### Export Seed Data
+
+It is often useful to include some example data to use for development.
+
+Any data that has been generated locally can be exported as CSV directly from the supabase dashboard.
+This data should be placed in the `apps\picsa-server\supabase\data` folder.
+
+Seed data can then be imported via
+
+```sh
+yarn nx run picsa-server:seed
+```
 
 ## Advanced
 
