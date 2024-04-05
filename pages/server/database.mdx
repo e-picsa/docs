@@ -7,10 +7,10 @@ https://supabase.com/docs/guides/database/overview
 
 The database schema is defined within migration files that can be used both to bootstrap the database for first use, and to apply ongoing updates as required.
 
-To fully initialise a clean database (wipe existing data and changes), use the db reset command.
+To fully initialise a clean database (wipe existing data and changes and repopulate seed data), use the reset command.
 
 ```sh
-yarn nx run picsa-server:supabase db reset
+yarn nx run picsa-server:reset
 ```
 
 To partially apply only new migrations (keep existing data and changes)
@@ -19,7 +19,7 @@ To partially apply only new migrations (keep existing data and changes)
 yarn nx run picsa-server:supabase migration up
 ```
 
-To populate initial seed data run the following command
+To repopulate data from seed files run
 
 ```sh
 yarn nx run picsa-server:seed
