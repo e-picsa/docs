@@ -12,7 +12,7 @@ A rest client to trigger functions, E.g.
 - [Insomnia Desktop App](insomnia.rest), or
 - [Thunder Client VSCode Extension](https://marketplace.visualstudio.com/items?itemName=rangav.vscode-thunder-client)
 
-## Serve Functions
+## Running Locally
 
 If developing functions locally run via
 
@@ -20,7 +20,7 @@ If developing functions locally run via
 yarn nx run picsa-server:supabase functions serve
 ```
 
-## Authorization
+### Authorization
 
 Functions may expect a user to pass auth credentials with the function.
 A list of available credentials can be found via
@@ -40,9 +40,10 @@ Either of these can be included in the headers of your http rest client when cal
 Usually there will be an `Auth` option with the request, use this to set a `Bearer token` with the value Output
 
 E.g. in Insomnia:
-[!](./images/functions-insomnia-auth.png)
 
-## Create New Function
+![](./images/functions-insomnia-auth.png)
+
+## Develop New Functions
 
 Supabase recommends using a smaller number of functions, where each function can serve multiple purposes
 
@@ -63,12 +64,22 @@ switch (endpoint) {
 _my-function.ts_
 
 ```ts
-export const myFunction = async (req: Request) => {...}
+export const myFunction = async (req: Request) => {
+  return new Response("it works");
+};
 ```
 
-## Run Function
+To return more structured responses you may want to use the `JSONResponse` and `ErrorResponse` utility methods included locally
 
-## Unit Testing
+### Run via Rest Client
+
+Simply make a request to the named endpoint, e.g.
+
+```
+http://localhost:54321/functions/v1/dashboard/my-function
+```
+
+### Unit Testing
 
 Whilst serving functions tests can be executed by
 
@@ -86,7 +97,7 @@ Functions cli supports [additional arguments](https://fig.io/manual/deno/test) s
 yarn nx run picsa-server:test-functions --watch
 ```
 
-## Deploy Functions
+## Production Deployment
 
 ```sh
 supabase functions deploy
