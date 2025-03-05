@@ -7,6 +7,7 @@ const withNextra = nextra({
   search: {
     codeblocks: false,
   },
+  defaultShowCopyCode: true,
 });
 
 /** @type {import('next').NextConfig} */
