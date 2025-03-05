@@ -1,10 +1,12 @@
 # Server
-The server backend is built on top of [Supabase](https://supabase.com/docs), which provides infrastructure for database, file storage, user authentication, serverless functions and more. 
+
+The server backend is built on top of [Supabase](https://supabase.com/docs), which provides infrastructure for database, file storage, user authentication, serverless functions and more.
 
 Local development requires running a self-managed supabase instance using docker containers.
 Serverless functions are run using a Deno runtime environment
 
 ## Prerequisites
+
 - [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
 ## Quickstart
@@ -17,24 +19,24 @@ yarn start:server
 
 This will start various backend services within docker containers
 
-| Feature     | URI |
-| ----------- | ----------- |
-| Studio      | http://localhost:54323         |
-| API         | http://localhost:54321        |
-| DB          | postgresql://postgres:postgres@localhost:54322/postgres           |
-| GraphQL     | http://localhost:54321/graphql/v1         |
-| Inbucket    | http://localhost:54324         |
- 
+| Feature  | URI                                                     |
+| -------- | ------------------------------------------------------- |
+| Studio   | http://localhost:54323                                  |
+| API      | http://localhost:54321                                  |
+| DB       | postgresql://postgres:postgres@localhost:54322/postgres |
+| GraphQL  | http://localhost:54321/graphql/v1                       |
+| Inbucket | http://localhost:54324                                  |
 
-**Frontend Config**   
+**Frontend Config**  
 In order for frontend apps to communicate with the server an `anon key` created by the server must be populated to local configuration.
 
 This key can be found in the console when the server starts, or by running the script
+
 ```sh
 yarn nx run picsa-server:supabase status
 ```
-This key should be populated to `libs\environments\src\supabase\config.json`
 
+This key should be populated to `libs\environments\src\supabase\config.json`
 
 ### Create User
 
@@ -48,37 +50,12 @@ password: `anonymous_user@picsa.app`
 
 Ensure **Auto Confirm** is checked
 
-
 ### Stop Server
+
 When no longer in use the server can be stopped by either stopping the container running in docker desktop, or by command
+
 ```sh
 yarn nx run picsa-server:supabase stop
-```
-
-## Troubleshooting
-
-**Relative import path "@supabase/supabase-js" not prefixed**
-
-Any Imports have to be defined both in `import-map.json` file
-
-**Ports are not available exposing port TCP 0.0.0.0:54322 -> 0.0.0.0:0: listen tcp 0.0.0.0:54322: bind: An attempt was made to access a socket in a way forbidden by its access permissions**
-
-Windows reserves some of the same ports that supabase uses. Either the supabase ports can be modified from the `config.toml` file, or windows updated to change restricted port ranges
-
-https://stackoverflow.com/a/71190107/5693245
-https://github.com/supabase/cli/issues/189
-
-**Server restart fails (corrupted server)**
-
-If the server stops working it may need a clean restart
-
-```sh
-yarn nx run picsa-server:supabase stop --no-backup
-```
-This will stop the running container but not persist any data
-
-```sh
-yarn nx run picsa-server:supabase start
 ```
 
 ## Links

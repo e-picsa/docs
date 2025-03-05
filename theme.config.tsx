@@ -28,14 +28,6 @@ const themeConfig: DocsThemeConfig = {
       </>
     );
   },
-  useNextSeoProps() {
-    const { route } = useRouter();
-    if (route !== "/") {
-      return {
-        titleTemplate: "%s – PICSA",
-      };
-    }
-  },
   toc: {
     float: true,
     title: <strong>On this Page</strong>,
@@ -46,7 +38,7 @@ const themeConfig: DocsThemeConfig = {
     next: true,
   },
   footer: {
-    text: (
+    component: (
       <>
         <span>
           Copyright {new Date().getFullYear()} ©{" "}
