@@ -1,11 +1,16 @@
 # Functions
 
-(WiP Docs)
+Supabase provides Edge functions to execute code on-demand in the cloud
 
 ## Prerequisites
 
 - [Deno](https://docs.deno.com/runtime/manual/getting_started/installation)
 - [Deno VSCode Extension](https://marketplace.visualstudio.com/items?itemName=denoland.vscode-deno)
+
+A rest client to trigger functions, E.g.
+
+- [Insomnia Desktop App](insomnia.rest), or
+- [Thunder Client VSCode Extension](https://marketplace.visualstudio.com/items?itemName=rangav.vscode-thunder-client)
 
 ## Serve Functions
 
@@ -15,13 +20,55 @@ If developing functions locally run via
 yarn nx run picsa-server:supabase functions serve
 ```
 
-Functions can be called from any rest client.
+## Authorization
 
-Authorization credentials should be provided using the service_role key output when server started or by calling `nx run picsa-server:supabase status`
+Functions may expect a user to pass auth credentials with the function.
+A list of available credentials can be found via
 
-https://supabase.com/docs/guides/functions/local-development
+```sh
+yarn nx run picsa-server:supabase status
+```
 
-**Test Functions**
+Output will provide keys for both anonymous and service role user
+
+```
+anon key: eyJhbGciOiJIUzI1N....
+service_role key: eyJhbGciOiJI...
+```
+
+Either of these can be included in the headers of your http rest client when calling functions.
+Usually there will be an `Auth` option with the request, use this to set a `Bearer token` with the value Output
+
+E.g. in Insomnia:
+[!](./images/functions-insomnia-auth.png)
+
+## Create New Function
+
+Supabase recommends using a smaller number of functions, where each function can serve multiple purposes
+
+As such all functions related to a specific product, e.g. the dashboard, should be grouped into a single parent function as seen in
+
+To add a new function simply create the `.ts` file and add a new endpoint to call that function from the main index, e.g.
+
+_apps/picsa-server/supabase/functions/dashboard/index.ts_
+
+```ts
+switch (endpoint) {
+  case "my-endpoint":
+    return myFunction(req);
+  // ...
+}
+```
+
+_my-function.ts_
+
+```ts
+export const myFunction = async (req: Request) => {...}
+```
+
+## Run Function
+
+## Unit Testing
 
 Whilst serving functions tests can be executed by
 
@@ -44,3 +91,7 @@ yarn nx run picsa-server:test-functions --watch
 ```sh
 supabase functions deploy
 ```
+
+## Additional Links
+
+- https://supabase.com/docs/guides/functions/local-development

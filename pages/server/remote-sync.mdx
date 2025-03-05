@@ -1,0 +1,73 @@
+https://www.youtube.com/watch?v=N0Wb85m3YMI
+
+## Manual Changes
+
+### Secrets
+
+Ensure `vault` enabled and populate secrets for:
+
+- `project_url` - full supabase project url, used for cron-triggered functions (e.g. forecasts cron)
+
+### Other Changes
+
+- kobo webhook url
+- secrets
+- KOBO_API_KEY
+- environment supabase config.json
+
+## Troubleshooting
+
+**ERROR: schema "supabase_functions" does not exist (SQLSTATE 3F000)**
+
+Enable webhooks on project, go to _Project -> Database -> Webhooks -> Enable Webhooks_
+
+https://github.com/supabase/cli/issues/1552
+
+**DB Pull creates unexpected storage migration**
+
+If when running `supabase db pull` a migration file is populated with
+
+```sql
+ERROR: column objects.owner_id does not exist (SQLSTATE 42703)
+At statement 0: create or replace view "public"."storage_objects" as  SELECT objects.id,
+    objects.bucket_id,
+    objects.name,
+    objects.owner,
+    objects.created_at,
+    objects.updated_at,
+    objects.last_accessed_at,
+    objects.metadata,
+    objects.path_tokens,
+    objects.version,
+    objects.owner_id
+   FROM storage.objects
+```
+
+This implies local and server APIs are running different storage versions
+https://github.com/supabase/cli/issues/1665
+
+Short term recommended fix is to ignore the migration (delete locally and do not commit to server)
+
+**The remote database's migration history is not in sync with the contents of supabase\migrations**
+
+Check the db table `supabase_migrations.schema_migrations`, this will list all migrations that have been applied on remote and should also exist locally
+
+If any migrations have been removed locally (and manually reverted on db) then they should be removed from the list, e.g.
+
+```sh
+supabase migration repair --status reverted 20240116050508
+```
+
+With server migration list in sync with local it will then be possible to do a db pull operation to ensure local db matches server.
+
+```sh
+supabase db pull
+```
+
+This will create a new migration file containing the difference between server and local dbs.
+
+It would also be a good time to test whether the local db can be recreated from scratch
+
+```sh
+supabase db reset
+```

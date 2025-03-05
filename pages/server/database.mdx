@@ -123,16 +123,3 @@ Once linked, remote db schema can be pulled
 ```sh
 supabase db pull
 ```
-
-## Troubleshooting
-
-**`supabase link` fails - timeout**
-
-- Check dashboard and ensure ip not banned
-- Use supabase cli directly
-- Pass password as var
-
-```sh
-cd apps/picsa-server
-supabase link --project-ref [ref] --password [pass]
-```
