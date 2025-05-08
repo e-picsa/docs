@@ -120,12 +120,7 @@ Once linked, remote db schema can be pushed
 ```sh
 supabase migration up --linked
 ```
-Once changes have been applied should diff remote and local via `supabase db pull`.
 
-If local and server are in sync you should see an output such as: 
-```
-no schema changes found
-```
 
 ### Pull server db
 
@@ -136,6 +131,12 @@ supabase db pull
 ```
 
 This will create a single migration containing the full diff to match local db to server
+
+If local and server are in sync you should see an output such as:
+
+```
+no schema changes found
+```
 
 ## Troubleshooting
 
