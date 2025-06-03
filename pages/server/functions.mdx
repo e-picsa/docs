@@ -98,10 +98,20 @@ yarn nx run picsa-server:test-functions --watch
 ```
 
 ## Production Deployment
-
+To deploy functions first ensure supabase is logged in and linked to the production project
 ```sh
-supabase functions deploy
+cd apps/picsa-server
+npx supabase login
+npx supabase link --project-ref [ref]
 ```
+Where `--project-ref` is `id` of project from supabase console. If prompted for db password can leave blank
+
+Then deploy via:
+```sh
+yarn nx run picsa-server:deploy-functions
+```
+
+If functions require specific `Secrets` to be set ensure to update from the supabase console as required
 
 ## Additional Links
 
