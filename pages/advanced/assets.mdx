@@ -52,9 +52,9 @@ Further documentation on asset configuration can be found at: https://angular.io
 In addition to sharing with individual tools, shared assets should also be configured for any apps that import the tools (i.e. main extension app).  
 This will be handled by adding an entry to copy the tool assets into the main app, e.g.
 
-```json filename="apps/picsa-apps/extension-app/project.json"
+```json filename="apps/picsa-apps/app/project.json"
 {
-  "name": "picsa-apps-extension-app",
+  "name": "picsa-apps-app",
   "targets": {
     "build": {
       "options": {
@@ -117,9 +117,9 @@ E.g. If in the tool-sharing example assets where actually copied to a different 
 
 The extension app will require additional configuration to reflect this (resulting in a small amount of asset duplication)
 
-```json filename="apps/picsa-apps/extension-app/project.json"
+```json filename="apps/picsa-apps/app/project.json"
 {
-  "name": "picsa-apps-extension-app",
+  "name": "picsa-apps-app",
   "targets": {
     "build": {
       "options": {

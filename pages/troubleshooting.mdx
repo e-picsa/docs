@@ -17,6 +17,7 @@ npx jetify
   languageName: node
   linkType: hard
 ```
+
 ### Cannot run jest tests against monitoring-tool
 
 Known issue, related to how jest will attempt to recompile prior to running. Have tried many workarounds, but to no success
@@ -27,11 +28,11 @@ Known issue, related to how jest will attempt to recompile prior to running. Hav
 
 Will likely need to fork and rebuild repo to add better support (assuming esm module syntax)
 
-### Play store rejected - sensitive permissions 
+### Play store rejected - sensitive permissions
 
 **(REQUEST_INSTALL_PACKAGES )**
 
-Update `apps\picsa-apps\extension-app-native\android\app\src\main\AndroidManifest.xml` to remove permission
+Update `apps\picsa-apps\app-native\android\app\src\main\AndroidManifest.xml` to remove permission
 
 ```
 <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" tools:node="remove"/>

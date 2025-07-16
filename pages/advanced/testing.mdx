@@ -15,7 +15,7 @@ You will also need to populate a relevant `google-services.json` file, available
 
 In order to run a local app on a native (or emulator) device with live-reload support both the device and local server need custom configuration.
 
-Create a file at `apps/picsa-apps/extension-app-native/.env.local` and provide a `SERVER_URL` to match your local ipv4 address for the angular server.
+Create a file at `apps/picsa-apps/app-native/.env.local` and provide a `SERVER_URL` to match your local ipv4 address for the angular server.
 
 This should usually be in the form: `192.xxx.xx.xx`, and append `:4200` port for the angular server.
 
@@ -31,7 +31,7 @@ SERVER_URL=http://192.xxx.xx.xx:4200
 Now run the utility script to update the app config and start the app server
 
 ```sh
-yarn nx run picsa-apps-extension-app-native:serve
+yarn nx run picsa-apps-app-native:serve
 ```
 
 Run the app from android studio either on an emulator or physical device
@@ -45,7 +45,7 @@ This can be done by visiting the url you specified in your local web browser, e.
 
 If the app is running in a local browser then you should check that the SERVER_URL has populated as expected.
 You can do this by checking the generated file at  
-`apps\picsa-apps\extension-app-native\android\app\src\main\assets\capacitor.config.json`
+`apps\picsa-apps\app-native\android\app\src\main\assets\capacitor.config.json`
 
 The output should include a block with the url specified from your environment file
 
