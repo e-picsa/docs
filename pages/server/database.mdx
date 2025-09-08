@@ -109,6 +109,7 @@ type IUserRow = Database["public"]["Tables"]["users"]["Row"];
 ```
 
 ### Push local changes to Server
+
 First the local server must be linked to the production instance, using the production server id (ref)
 
 ```sh
@@ -118,9 +119,8 @@ yarn nx run picsa-server:supabase link --project-ref [ref]
 Once linked, remote db schema can be pushed
 
 ```sh
-supabase migration up --linked
+yarn nx run picsa-server:supabase migration up --linked
 ```
-
 
 ### Pull server db
 
