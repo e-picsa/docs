@@ -127,7 +127,7 @@ yarn nx run picsa-server:supabase migration up --linked
 Changes from production server db can also be pulled locally
 
 ```sh
-supabase db pull
+yarn nx run picsa-server:supabase db pull
 ```
 
 This will create a single migration containing the full diff to match local db to server
