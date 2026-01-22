@@ -11,7 +11,7 @@ as well as any component modules (to support lazy loading)
 _app.module.ts_
 
 ```ts
-import { PicsaTranslateModule } from '@picsa/shared/modules/translate';
+import { PicsaTranslateModule } from '@picsa/i18n';
 @NgModule({
   imports: [
     PicsaTranslateModule.forRoot(),
@@ -38,7 +38,7 @@ Additionally any lazy-loaded module should also directly import the shared `Pics
 _component.module.ts_
 
 ```ts
-import { PicsaTranslateModule } from '@picsa/shared/modules/translate';
+import { PicsaTranslateModule } from '@picsa/i18n';
 @NgModule({
   imports: [
     PicsaTranslateModule,
@@ -77,7 +77,7 @@ If the translated string will not be rendered, e.g. as part of an alert of other
 the `PicsaTranslateService` can be used to generate translations
 
 ```ts
-import { PicsaTranslateService } from '@picsa/shared/modules';
+import { PicsaTranslateService } from '@picsa/i18n';
 
 constructor(translateService:PicsaTranslateService){}
 
