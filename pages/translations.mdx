@@ -89,7 +89,7 @@ async showAlert(msg:string){
 
 ## Extract Strings
 
-Any workspaces containing translation data should first be listed in `libs\i18n\src\hardcoded\index.ts`.
+Any workspaces containing translation data should first be listed in `libs\i18n-gen\src\hardcoded\index.ts`.
 This will allow scripts to translate using [ngx-translate-extract(https://github.com/biesbjerg/ngx-translate-extract).
 
 All strings marked with the translate pipe `{{ ... | translate}}` will automatically be extracted
@@ -112,28 +112,22 @@ items = [
 Once translations have been marked they need to be extracted to send to translators. This can be done by the following script
 
 ```sh
-yarn i18n
+yarn i18n:gen
 ```
 
-Any extracted strings will be populated to template files located in `libs\i18n\templates`, to share with translators.  
-Currently this process is managed manually using [PICSA Translations Google Sheet](https://docs.google.com/spreadsheets/d/1iIchgMdXmmkSCVGUzNLyCK9hx9fH6kVSssATmbLHzdg/edit?usp=sharing)
+Any extracted strings will be populated to template files located in `libs\i18n-gen\templates`, to share with translators.  
+This template can be uploaded to the [PICSA Dashboard](https://dashboard.picsa.app) for translation
 
 ## Update Translations
 
-Once updated translations have been returned, instructions should be followed from the Google Sheet to populate json files in the `libs\i18n\source` folder
-
-Finally developers can populate app translation assets from the source files using the same script as extraction, i.e.
-
-```sh
-yarn i18n
-```
+Translated files can be exported from the [PICSA Dashboard](https://dashboard.picsa.app) and populated in the `libs/i18n/assets` folder
 
 ## Preview Translations
 
 Whilst awaiting updates from translators it is still possible to view all text pending translation
 (i.e. text that has been correctly configured for translation)
 
-First ensure all translations have been updated via the `yarn i18n` command  
+First ensure all translations have been updated via the `yarn i18n:gen` command  
 Then run the app locally and specify the `Global - Translators` configuration
 
 All text marked for translation will be indicated by `•{text}•`, e.g.
