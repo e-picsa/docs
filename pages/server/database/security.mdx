@@ -1,0 +1,402 @@
+# Security
+
+This guide outlines the recommended approach for configuring Row Level Security (RLS) and table privileges in Supabase to ensure a secure, performant, and maintainable application.
+
+---
+
+## 1. Default Safety Defaults (Revoke All)
+
+In Supabase, the `public` schema grants `ALL` privileges to the `anon` and `authenticated` roles by default. To implement a **Zero Trust** architecture, you must explicitly revoke these and enable RLS.
+
+```sql
+-- 1. Revoke default 'public' access (covers anon and authenticated)
+revoke all on table public.your_table from anon, authenticated;
+
+-- 2. Enable RLS
+alter table public.your_table enable row level security;
+
+-- 3. (Optional) Force RLS for table owners too
+alter table public.your_table force row level security;
+```
+
+> **Note:** The `service_role` and table owners bypass RLS by default. Use `force row level security` if you want policies to apply universally, including during migrations or scripts run as `postgres`.
+
+### Table-Level vs. Row-Level Privileges
+
+Think of security in two layers:
+
+| Layer           | Control        | SQL Command     | Analogy                                         |
+| --------------- | -------------- | --------------- | ----------------------------------------------- |
+| **Table-Level** | **Access**     | `grant/revoke`  | Getting through the front door of the building. |
+| **Row-Level**   | **Visibility** | `create policy` | Which specific rooms you are allowed to enter.  |
+
+---
+
+## 2. Policy Naming Convention
+
+For maintainability in larger codebases, use a consistent naming pattern:
+
+```
+<table>:<action>:<description>
+```
+
+Examples:
+
+- `posts:select:public_read`
+- `posts:insert:owner_only`
+- `documents:update:org_members`
+
+---
+
+## 3. Security Policies
+
+### Level 1: Admin-Only Data (Cloud Functions)
+
+For sensitive data that should never be accessed directly by dashboard or app users:
+
+1. **Do not create RLS policies** for `authenticated` or `anon`.
+2. Use the **Service Role Key** in your Edge Functions or backend to bypass RLS entirely.
+
+```typescript
+// Edge Function example using service role
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseAdmin = createClient(
+  Deno.env.get('SUPABASE_URL')!,
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, // Bypasses RLS
+);
+
+const { data } = await supabaseAdmin.from('private_table').select('*');
+```
+
+**Security Definer vs. Invoker Functions:**
+When creating Postgres Functions (RPC):
+
+- **SECURITY INVOKER (Default):** Runs with the privileges of the user calling the function. If they don't have RLS access to the table, the function returns nothing or fails.
+- **SECURITY DEFINER:** Runs with the privileges of the function _creator_ (usually `postgres` admin). It bypasses RLS.
+- **Caution:** Always set a strict `search_path` and validate inputs to prevent SQL injection or unauthorized data exposure.
+
+---
+
+### Level 2: Authenticated Dashboard Access
+
+For general data interaction within the application.
+
+**Read-Only vs. Read-Write**
+
+Be explicit about which roles can perform which actions. Avoid granting `ALL` if the user only needs to read.
+
+> **Tip:** Always include the `to` clause (`to authenticated`, `to anon`). Omitting it applies the policy to `PUBLIC`, which includes _all_ roles—often unintended.
+
+- **Read-Only:**
+
+```sql
+grant select on table public.metrics to authenticated;
+
+create policy "metrics:select:authenticated_read"
+on public.metrics
+for select
+to authenticated
+using ( true );
+```
+
+- **Read-Write:**
+
+```sql
+grant select, insert, update on table public.project_data to authenticated;
+
+-- Select: users can view projects they belong to
+create policy "project_data:select:member_access"
+on public.project_data
+for select
+to authenticated
+using ( auth.uid() = owner_id or auth.uid() = any(member_ids) );
+
+-- Insert: users can create projects they own
+create policy "project_data:insert:owner_only"
+on public.project_data
+for insert
+to authenticated
+with check ( auth.uid() = owner_id );
+
+-- Update: users can update projects they own
+create policy "project_data:update:owner_only"
+on public.project_data
+for update
+to authenticated
+using ( auth.uid() = owner_id )
+with check ( auth.uid() = owner_id );
+```
+
+**USING vs. WITH CHECK**
+
+- **USING (`expression`):** Applied to `select`, `update`, and `delete`. It determines which existing rows are visible to the operation.
+- **WITH CHECK (`expression`):** Applied to `insert` and `update`. It determines if the **newly created or modified** data is valid.
+
+---
+
+#### Policy Combination: Permissive vs. Restrictive
+
+Multiple policies on the same table and operation are combined with **OR** by default (permissive). Use `as restrictive` when you need **AND** logic.
+
+```sql
+-- Permissive (default): User can access if ANY policy passes
+create policy "documents:select:owner_access"
+on public.documents
+for select
+to authenticated
+using ( auth.uid() = owner_id );
+
+create policy "documents:select:public_access"
+on public.documents
+for select
+to authenticated
+using ( is_public = true );
+
+-- Restrictive: This policy MUST pass in addition to any permissive policy
+create policy "documents:select:org_member_required"
+on public.documents
+as restrictive
+for select
+to authenticated
+using ( org_id in (select org_id from memberships where user_id = auth.uid()) );
+```
+
+In the above example, a user must:
+
+1. Pass the restrictive org membership check, **AND**
+2. Pass at least one permissive policy (owner or public)
+
+---
+
+### Level 3: User-Owned Data (Granular Control)
+
+Avoid using `for all`. Splitting policies allows for more precise control, such as allowing users to read everyone's content but only edit their own.
+
+```sql
+-- 1. Select: allow users to see all posts
+create policy "posts:select:public_read"
+on public.posts
+for select
+to authenticated
+using ( true );
+
+-- 2. Insert: ensure the 'user_id' matches the creator
+create policy "posts:insert:owner_only"
+on public.posts
+for insert
+to authenticated
+with check ( auth.uid() = user_id );
+
+-- 3. Update: target own rows & prevent transferring ownership
+create policy "posts:update:owner_only"
+on public.posts
+for update
+to authenticated
+using ( auth.uid() = user_id )
+with check ( auth.uid() = user_id );
+
+-- 4. Delete: target own rows only
+create policy "posts:delete:owner_only"
+on public.posts
+for delete
+to authenticated
+using ( auth.uid() = user_id );
+```
+
+---
+
+### Level 4: Public / Anonymous Access
+
+For data visible to everyone (e.g., landing page stats, public profiles):
+
+1. Grant `select` to `anon`.
+2. Filter specifically for public-flagged rows.
+
+```sql
+grant select on table public.site_config to anon;
+
+create policy "site_config:select:anon_public"
+on public.site_config
+for select
+to anon
+using ( true );
+```
+
+If only some of the rows are publicly available, use column identifiers to filter via `using`, e.g.
+
+```sql
+using (is_public = true);
+```
+
+---
+
+## 4. Performance & Common Pitfalls
+
+### Avoid Policy Subqueries
+
+RLS policies run for **every row** returned by a query. If your policy contains a subquery:
+
+```sql
+-- BAD: triggers a subquery per row
+using ( (select role from profiles where id = auth.uid()) = 'admin' )
+```
+
+A query returning 1,000 rows will trigger 1,000 subqueries, killing performance.
+
+**Solutions:**
+
+- Use custom JWT claims for user roles
+- Wrap the check in a `stable` function
+
+### Index Policy Columns
+
+Policies that filter on a column (e.g., `user_id = auth.uid()`) benefit from indexes:
+
+```sql
+create index idx_posts_user_id on public.posts (user_id);
+create index idx_documents_org_id on public.documents (org_id);
+```
+
+Without indexes, large tables will full-scan on every policy evaluation.
+
+### Recursive Policies
+
+Avoid policies that query the same table they are protecting. This often causes an infinite loop:
+
+```sql
+-- BAD: recursive query on the same table
+create policy "..." on public.teams using ( id in (select team_id from public.teams) );
+```
+
+### The `auth.uid()` Null Check
+
+`auth.uid()` returns `null` for anonymous users. If your policy logic doesn't account for this, `anon` users might accidentally gain access or experience unexpected errors.
+
+```sql
+-- BAD: anon users get NULL = NULL → undefined behavior
+using ( auth.uid() = user_id )
+
+-- GOOD: explicit null guard
+using ( auth.uid() is not null and auth.uid() = user_id )
+```
+
+---
+
+## 5. Testing RLS Policies
+
+Always validate your policies locally before deploying:
+
+```sql
+-- Simulate authenticated user
+set role authenticated;
+set request.jwt.claims to '{"sub": "test-user-uuid-here"}';
+
+-- Test select policy
+select * from public.posts;
+
+-- Test insert policy
+insert into public.posts (user_id, title) values ('test-user-uuid-here', 'Test');
+
+-- Test that unauthorized access fails
+insert into public.posts (user_id, title) values ('other-user-uuid', 'Should Fail');
+
+-- Reset to admin
+reset role;
+```
+
+For more complex scenarios, create test helper functions:
+
+```sql
+create or replace function test_as_user(user_id uuid)
+returns void as $$
+begin
+  execute format('set request.jwt.claims to %L', json_build_object('sub', user_id)::text);
+  set role authenticated;
+end;
+$$ language plpgsql;
+```
+
+---
+
+## 6. Realtime Implications
+
+Supabase Realtime respects RLS policies. Users will only receive broadcasts for rows they have `select` access to.
+
+```typescript
+// Client will only receive changes for rows passing RLS
+supabase
+  .channel('posts')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'posts' }, (payload) => {
+    console.log('Change received:', payload);
+  })
+  .subscribe();
+```
+
+> **Note:** If a user's access to a row changes (e.g., they're removed from a team), they will stop receiving updates for that row automatically.
+
+---
+
+## 7. Table Auditing
+
+We use a designated system for auditing changes to track who changed what and when.
+
+**How to setup:**
+
+1. Ensure your table has a **Primary Key**.
+2. Run the enable function:
+
+```sql
+select audit.enable_table_audit('public', 'your_table', 'id');
+```
+
+**Required Columns for History:**
+
+- **Primary Key:** Essential for tracking history.
+- **Excluded Columns:** Exclude high-frequency columns like `updated_at` to keep audit logs clean.
+
+```sql
+-- Example of ignoring noise columns
+select audit.enable_table_audit('public', 'your_table', 'id', '{updated_at, last_login_ip}');
+```
+
+---
+
+## 8. Common Auth Helper Functions
+
+Quick reference for Supabase auth functions available in RLS policies:
+
+| Function      | Returns | Description                                      |
+| ------------- | ------- | ------------------------------------------------ |
+| `auth.uid()`  | `uuid`  | The current user's ID (from JWT `sub` claim)     |
+| `auth.jwt()`  | `jsonb` | The entire JWT payload                           |
+| `auth.role()` | `text`  | The current role (`anon`, `authenticated`, etc.) |
+
+Example using JWT claims for role-based access:
+
+```sql
+-- Assuming your JWT contains: { "app_metadata": { "role": "admin" } }
+create policy "admin_only"
+on public.admin_settings
+for all
+to authenticated
+using ( (auth.jwt() -> 'app_metadata' ->> 'role') = 'admin' );
+```
+
+---
+
+## Quick Reference Checklist
+
+- [ ] Revoke default privileges on new tables
+- [ ] Enable RLS on all tables
+- [ ] Consider `force row level security` for owner bypass protection
+- [ ] Use explicit `to` clause on all policies
+- [ ] Guard against `auth.uid()` returning null
+- [ ] Avoid subqueries in policies; use JWT claims or stable functions
+- [ ] Add indexes on columns used in policy expressions
+- [ ] Test policies locally before deploying
+- [ ] Use consistent policy naming convention
+
+```
+
+```

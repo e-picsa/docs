@@ -1,0 +1,13 @@
+# Troubleshooting
+
+## `supabase link` fails - timeout
+
+- Check dashboard and ensure ip not banned
+- Use supabase cli directly
+- Pass password as var
+
+```sh
+cd apps/picsa-server
+npx supabase login
+npx supabase link --project-ref [ref] --password [pass]
+```

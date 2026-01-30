@@ -1,0 +1,53 @@
+# Advanced
+
+## Generate DB types
+
+Typescript type definitions can be generated from tables to use within application code.
+
+```sh
+yarn nx run picsa-server:gen-types
+```
+
+This will populate types to the `apps\picsa-server\supabase\types` folder.
+
+These types can be imported in frontend code from the linked `@picsa/server-types` package, e.g.
+
+```ts
+import type { Database } from "@picsa/server-types";
+```
+
+Specific table definitions can be accessed from the types, e.g. the `users` table row definition would be available via
+
+```ts
+type IUserRow = Database["public"]["Tables"]["users"]["Row"];
+```
+
+## Push local changes to Server
+
+First the local server must be linked to the production instance, using the production server id (ref)
+
+```sh
+yarn nx run picsa-server:supabase link --project-ref [ref]
+```
+
+Once linked, remote db schema can be pushed
+
+```sh
+yarn nx run picsa-server:supabase migration up --linked
+```
+
+## Pull server db
+
+Changes from production server db can also be pulled locally
+
+```sh
+yarn nx run picsa-server:supabase db pull
+```
+
+This will create a single migration containing the full diff to match local db to server
+
+If local and server are in sync you should see an output such as:
+
+```
+no schema changes found
+```

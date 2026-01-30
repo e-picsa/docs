@@ -1,0 +1,26 @@
+# Database
+
+Supabase manages a Postgres database, accessible via the studio
+https://supabase.com/docs/guides/database/overview
+
+## Bootstrap
+
+The database schema is defined within migration files that can be used both to bootstrap the database for first use, and to apply ongoing updates as required.
+
+To fully initialise a clean database (wipe existing data and changes and repopulate seed data), use the reset command.
+
+```sh
+yarn nx run picsa-server:reset
+```
+
+To partially apply only new migrations (keep existing data and changes)
+
+```sh
+yarn nx run picsa-server:supabase migration up
+```
+
+To repopulate data from seed files run
+
+```sh
+yarn nx run picsa-server:seed
+```
