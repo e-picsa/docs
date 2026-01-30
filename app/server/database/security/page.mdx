@@ -15,8 +15,6 @@ revoke all on table public.your_table from anon, authenticated;
 -- 2. Enable RLS
 alter table public.your_table enable row level security;
 
--- 3. (Optional) Force RLS for table owners too
-alter table public.your_table force row level security;
 ```
 
 > **Note:** The `service_role` and table owners bypass RLS by default. Use `force row level security` if you want policies to apply universally, including during migrations or scripts run as `postgres`.
@@ -84,48 +82,24 @@ For general data interaction within the application.
 
 **Read-Only vs. Read-Write**
 
-Be explicit about which roles can perform which actions. Avoid granting `ALL` if the user only needs to read.
-
-> **Tip:** Always include the `to` clause (`to authenticated`, `to anon`). Omitting it applies the policy to `PUBLIC`, which includes _all_ roles—often unintended.
-
-- **Read-Only:**
-
-```sql
-grant select on table public.metrics to authenticated;
-
-create policy "metrics:select:authenticated_read"
-on public.metrics
-for select
-to authenticated
-using ( true );
-```
+Be explicit about which roles can perform which actions.
 
 - **Read-Write:**
 
 ```sql
-grant select, insert, update on table public.project_data to authenticated;
+-- Enable RLS
+ALTER TABLE public.climate_station_data ENABLE ROW LEVEL SECURITY;
 
--- Select: users can view projects they belong to
-create policy "project_data:select:member_access"
-on public.project_data
-for select
-to authenticated
-using ( auth.uid() = owner_id or auth.uid() = any(member_ids) );
+-- Authenticated - read/write (no delete)
+REVOKE ALL ON TABLE public.climate_station_data FROM authenticated;
+GRANT SELECT, INSERT, UPDATE ON TABLE public.climate_station_data TO authenticated;
 
--- Insert: users can create projects they own
-create policy "project_data:insert:owner_only"
-on public.project_data
-for insert
-to authenticated
-with check ( auth.uid() = owner_id );
+CREATE POLICY "climate_station_data:read_write:authenticated" ON public.climate_station_data
+FOR ALL
+TO authenticated USING (true) WITH CHECK (true);
 
--- Update: users can update projects they own
-create policy "project_data:update:owner_only"
-on public.project_data
-for update
-to authenticated
-using ( auth.uid() = owner_id )
-with check ( auth.uid() = owner_id );
+-- Anonymous - none
+REVOKE ALL ON TABLE public.climate_station_data FROM anon;
 ```
 
 **USING vs. WITH CHECK**
@@ -135,62 +109,25 @@ with check ( auth.uid() = owner_id );
 
 ---
 
-#### Policy Combination: Permissive vs. Restrictive
-
-Multiple policies on the same table and operation are combined with **OR** by default (permissive). Use `as restrictive` when you need **AND** logic.
-
-```sql
--- Permissive (default): User can access if ANY policy passes
-create policy "documents:select:owner_access"
-on public.documents
-for select
-to authenticated
-using ( auth.uid() = owner_id );
-
-create policy "documents:select:public_access"
-on public.documents
-for select
-to authenticated
-using ( is_public = true );
-
--- Restrictive: This policy MUST pass in addition to any permissive policy
-create policy "documents:select:org_member_required"
-on public.documents
-as restrictive
-for select
-to authenticated
-using ( org_id in (select org_id from memberships where user_id = auth.uid()) );
-```
-
-In the above example, a user must:
-
-1. Pass the restrictive org membership check, **AND**
-2. Pass at least one permissive policy (owner or public)
-
----
-
 ### Level 3: User-Owned Data (Granular Control)
 
 Avoid using `for all`. Splitting policies allows for more precise control, such as allowing users to read everyone's content but only edit their own.
 
 ```sql
 -- 1. Select: allow users to see all posts
-create policy "posts:select:public_read"
-on public.posts
+create policy "posts:select:public_read" on public.posts
 for select
-to authenticated
+to authenticated 
 using ( true );
 
 -- 2. Insert: ensure the 'user_id' matches the creator
-create policy "posts:insert:owner_only"
-on public.posts
+create policy "posts:insert:owner_only" on public.posts
 for insert
-to authenticated
+to authenticated 
 with check ( auth.uid() = user_id );
 
 -- 3. Update: target own rows & prevent transferring ownership
-create policy "posts:update:owner_only"
-on public.posts
+create policy "posts:update:owner_only" on public.posts
 for update
 to authenticated
 using ( auth.uid() = user_id )
@@ -230,6 +167,41 @@ using (is_public = true);
 ```
 
 ---
+
+#### Policy Combination: Permissive vs. Restrictive
+
+Multiple policies on the same table and operation are combined with **OR** by default (permissive). Use `as restrictive` when you need **AND** logic.
+
+```sql
+-- Permissive (default): User can access if ANY policy passes
+create policy "documents:select:owner_access"
+on public.documents
+for select
+to authenticated
+using ( auth.uid() = owner_id );
+
+create policy "documents:select:public_access"
+on public.documents
+for select
+to authenticated
+using ( is_public = true );
+
+-- Restrictive: This policy MUST pass in addition to any permissive policy
+create policy "documents:select:org_member_required"
+on public.documents
+as restrictive
+for select
+to authenticated
+using ( org_id in (select org_id from memberships where user_id = auth.uid()) );
+```
+
+In the above example, a user must:
+
+1. Pass the restrictive org membership check, **AND**
+2. Pass at least one permissive policy (owner or public)
+
+---
+
 
 ## 4. Performance & Common Pitfalls
 
