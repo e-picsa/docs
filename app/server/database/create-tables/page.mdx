@@ -5,17 +5,17 @@
 This can be achieved interactively using the supabase studio (assumed running locally)  
 http://localhost:54323/project/default/editor
 
-![](../images/db-table-create.png)
+![](./db-table-create.png)
 
 For ease of testing, you will likely want to opt out of `Row Level Security`. Permissions can be configured at a later stage
 
-![](../images/db-table-rls.png)
+![](./db-table-rls.png)
 
 ## Define Schema
 
 Using the interactive interface define data columns for your table
 
-![](../images/db-table-columns.png)
+![](./db-table-columns.png)
 
 ## Export definition
 
@@ -38,7 +38,7 @@ This will populate a new file to `apps\picsa-server\supabase\migrations`.
 2. Copy the table definition to the migration
    The definition can be found in the UI using the `Definition` tab in the top-right corner
 
-![](../images/db-definition.png)
+![](./db-definition.png)
 
 ## Export Seed Data
 
@@ -47,7 +47,7 @@ It is often useful to include some example data to use for development.
 Any data that has been generated locally can be exported as CSV directly from the supabase dashboard.
 Select rows for export and select **Export to CSV**.
 
-![](../images/db-seed-export.png)
+![](./db-seed-export.png)
 
 This data should be placed in the `apps\picsa-server\supabase\data` folder.
 

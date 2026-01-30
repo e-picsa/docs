@@ -1,8 +1,6 @@
 import nextra from "nextra";
 
 const withNextra = nextra({
-  theme: "nextra-theme-docs",
-  themeConfig: "./theme.config.tsx",
   latex: true,
   search: {
     codeblocks: false,
@@ -12,6 +10,7 @@ const withNextra = nextra({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ["nextra", "nextra-theme-docs"],
   images: { unoptimized: true },
   output: "export",
   reactStrictMode: true,
