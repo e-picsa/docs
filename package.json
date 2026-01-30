@@ -7,7 +7,7 @@
     "spellcheck": "yarn cspell .",
     "start": "opener http://localhost:3000 && next dev -p 3000",
     "start:prod": "next build && npx serve out",
-    "lint": "next lint"
+    "lint": "eslint app"
   },
   "dependencies": {
     "cspell": "^8.17.5",
@@ -22,7 +22,7 @@
     "@types/node": "^24",
     "@types/react": "19.0.10",
     "@types/react-dom": "^19.0.4",
-    "eslint": "^9.21.0",
+    "eslint": "^9.39.2",
     "eslint-config-next": "^16.1.6",
     "opener": "^1.5.2",
     "typescript": "5.8.2"
