@@ -9,8 +9,6 @@ export default {
   troubleshooting: "Troubleshooting",
   issues: {
     title: "Issues ↗",
-    type: "page",
     href: "https://github.com/e-picsa/picsa-apps/issues",
-    newWindow: true,
   },
 };

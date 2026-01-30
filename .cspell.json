@@ -30,6 +30,7 @@
     "openstreetmap",
     "penpot",
     "picsa",
+    "plpgsql",
     "protobuf",
     "rxdb",
     "sqlstate",
