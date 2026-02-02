@@ -33,7 +33,11 @@ In order for frontend apps to communicate with the server an `anon key` created 
 This key can be found in the console when the server starts, or by running the script
 
 ```sh
-yarn nx run picsa-server:supabase status
+yarn nx run picsa-server:supabase status --output json
+```
+
+```json
+ "ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF...",
 ```
 
 This key should be populated to `libs\environments\src\supabase\config.json`

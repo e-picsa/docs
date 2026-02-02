@@ -75,8 +75,41 @@ When creating Postgres Functions (RPC):
 - **Caution:** Always set a strict `search_path` and validate inputs to prevent SQL injection or unauthorized data exposure.
 
 ---
+### Level 2: Deployment Roles
+The dashboard has its own user roles system to assign fine-grained user permissions, such as `admin` or `feature.admin`
 
-### Level 2: Authenticated Dashboard Access
+To use these permissions within policies first ensure that data rows link to a specific deployment_id
+```sql
+alter table public.my_table add column deployment_id text REFERENCES public.deployment(id);
+```
+
+Set default table access (will still prevent row-level access)
+```sql
+-- Enable RLS
+ALTER TABLE public.my_table ENABLE ROW LEVEL SECURITY;
+
+-- Authenticated - read/write (no delete)
+REVOKE ALL ON TABLE public.my_table FROM authenticated;
+GRANT ALL ON public.my_table TO authenticated;
+
+-- Anonymous - none
+REVOKE ALL ON TABLE public.my_table FROM anon;
+```
+
+Then you can use utilities to ensure user has fine-grained admin permissions to access rows
+
+```sql
+CREATE POLICY "my_table:write:admin" ON public.my_table
+FOR ALL TO authenticated
+-- NOTE - assumes deployment_id column in data to link to deployment
+USING (public.user_is_admin(deployment_id, 'climate'))
+WITH CHECK (public.user_is_admin(deployment_id, 'climate'));
+
+```
+
+---
+
+### Level 3: Authenticated Dashboard Access
 
 For general data interaction within the application.
 
@@ -84,22 +117,22 @@ For general data interaction within the application.
 
 Be explicit about which roles can perform which actions.
 
-- **Read-Write:**
+- **Read-Write:authenticated-all**
 
 ```sql
 -- Enable RLS
-ALTER TABLE public.climate_station_data ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.my_table ENABLE ROW LEVEL SECURITY;
 
 -- Authenticated - read/write (no delete)
-REVOKE ALL ON TABLE public.climate_station_data FROM authenticated;
-GRANT SELECT, INSERT, UPDATE ON TABLE public.climate_station_data TO authenticated;
+REVOKE ALL ON TABLE public.my_table FROM authenticated;
+GRANT SELECT, INSERT, UPDATE ON TABLE public.my_table TO authenticated;
 
-CREATE POLICY "climate_station_data:read_write:authenticated" ON public.climate_station_data
+CREATE POLICY "my_table:read_write:authenticated" ON public.my_table
 FOR ALL
 TO authenticated USING (true) WITH CHECK (true);
 
 -- Anonymous - none
-REVOKE ALL ON TABLE public.climate_station_data FROM anon;
+REVOKE ALL ON TABLE public.my_table FROM anon;
 ```
 
 **USING vs. WITH CHECK**
@@ -109,41 +142,42 @@ REVOKE ALL ON TABLE public.climate_station_data FROM anon;
 
 ---
 
-### Level 3: User-Owned Data (Granular Control)
+### Level 4: User-Owned Data (Granular Control)
 
 Avoid using `for all`. Splitting policies allows for more precise control, such as allowing users to read everyone's content but only edit their own.
 
+Use an `owner` column and rules to allow only owner to update
+
 ```sql
--- 1. Select: allow users to see all posts
-create policy "posts:select:public_read" on public.posts
-for select
-to authenticated 
+alter table public.my_table add column owner UUID default auth.uid() REFERENCES auth.users(id);
+```
+
+```sql
+-- 1. Select: allow users to see all my_table
+create policy "my_table:select:public_read" on public.my_table
+for select to authenticated 
 using ( true );
 
--- 2. Insert: ensure the 'user_id' matches the creator
-create policy "posts:insert:owner_only" on public.posts
-for insert
-to authenticated 
-with check ( auth.uid() = user_id );
+-- 2. Insert: ensure the 'owner' column matches the creator
+create policy "my_table:insert:owner_only" on public.my_table
+for insert to authenticated 
+with check ( auth.uid() = owner );
 
 -- 3. Update: target own rows & prevent transferring ownership
-create policy "posts:update:owner_only" on public.posts
-for update
-to authenticated
-using ( auth.uid() = user_id )
-with check ( auth.uid() = user_id );
+create policy "my_table:update:owner_only" on public.my_table
+for update to authenticated
+using ( auth.uid() = owner )
+with check ( auth.uid() = owner );
 
 -- 4. Delete: target own rows only
-create policy "posts:delete:owner_only"
-on public.posts
-for delete
-to authenticated
-using ( auth.uid() = user_id );
+create policy "my_table:delete:owner_only" on public.my_table
+for delete to authenticated
+using ( auth.uid() = owner );
 ```
 
 ---
 
-### Level 4: Public / Anonymous Access
+### Level 5: Public / Anonymous Access
 
 For data visible to everyone (e.g., landing page stats, public profiles):
 
@@ -151,12 +185,10 @@ For data visible to everyone (e.g., landing page stats, public profiles):
 2. Filter specifically for public-flagged rows.
 
 ```sql
-grant select on table public.site_config to anon;
+grant select on table public.my_table to anon;
 
-create policy "site_config:select:anon_public"
-on public.site_config
-for select
-to anon
+create policy "my_table:select:anon_public" on public.my_table
+for select to anon
 using ( true );
 ```
 
