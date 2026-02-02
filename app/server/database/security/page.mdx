@@ -90,7 +90,7 @@ ALTER TABLE public.my_table ENABLE ROW LEVEL SECURITY;
 
 -- Authenticated - read/write (no delete)
 REVOKE ALL ON TABLE public.my_table FROM authenticated;
-GRANT ALL ON public.my_table TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.my_table TO authenticated;
 
 -- Anonymous - none
 REVOKE ALL ON TABLE public.my_table FROM anon;
