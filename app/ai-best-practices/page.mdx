@@ -1,0 +1,113 @@
+import { Callout } from "nextra/components";
+
+# AI Integration & Best Practices
+
+This guide outlines effective strategies for integrating Artificial Intelligence (AI) into your development workflow within the **Picsa** repository (Angular, Capacitor, Nx).
+
+<Callout type="info" emoji="ℹ️">
+**Resource Efficiency:** We prioritize tools that are accessible and resource-efficient. We recommend leveraging cost-effective models and free tiers where available to ensure inclusivity for all developers.
+</Callout>
+
+## Recommended Tools & Models
+
+Based on our tech stack (**Angular**, **Capacitor**, **Nx**), the following tools and models are recommended:
+
+### Tools
+
+- **[Antigravity](https://marketplace.visualstudio.com/items?itemName=Google.antigravity) (IDE Extension)**: Recommended for deep codebase integration.
+- **[Cursor](https://cursor.sh/)**: A fork of VS Code with native AI capabilities.
+- **[GitHub Copilot](https://github.com/features/copilot)**: Good for autocompletion (check for student/education free access).
+- **[Codeium](https://codeium.com/)**: A strong, free alternative to Copilot for individual developers.
+
+### Models
+
+- **High Reasoning Models**: excellent for complex architectural reasoning and refactoring.
+- **Fast/Efficient Models**: balance speed, cost, and performance for daily tasks.
+- **Coding Specialists**: models specifically tuned for code generation and debugging.
+
+To evaluate current top models for coding tasks, refer to independent benchmarks:
+
+- [Artificial Analysis - Coding Benchmarks](https://artificialanalysis.ai/)
+- [SWE-bench](https://www.swebench.com/)
+- [LiveCodeBench](https://livecodebench.github.io/)
+
+<Callout emoji="💡">
+Choose a model that fits the task. Use heavier, more expensive models for complex planning and debugging, and lighter, faster models for quick generation and autocomplete.
+</Callout>
+
+## Automated PR Reviews
+
+<Callout type="warning" emoji="⚠️">
+**Automated Gemini Reviews**: All Pull Requests (PRs) in this repository are automatically reviewed by Gemini. This helps identify potential issues early.
+</Callout>
+
+**Critical Thinking Required**:
+AI is a tool, not an oracle. It can hallmark (hallucinate) or misunderstand context.
+
+- **Do not blindly accept AI suggestions.**
+- **Verify** logic, particularly for critical business rules or security.
+- **Test** any code provided by AI before merging.
+
+## Regular Workflows (Daily Tasks)
+
+Use these prompts for routine development activities.
+
+### 1. Angular Component Generation
+
+Generate boilerplates that match our strict **OnPush** and **Standalone** requirements.
+
+> "Create an Angular standalone component for `[Component Name]`. It should use `ChangeDetectionStrategy.OnPush`, Signals, be fully typed, and use Tailwind CSS."
+
+> [!TIP]
+> **Component Standards**: The main repository has an `.agent/rules/angular.md` file that agents use to guide best practices. If the output doesn't meet expectations, consider updating that file to improve future generations.
+
+### 2. Capacitor Plugin Usage
+
+Ensure proper mobile integration guidelines are followed.
+
+> "Show me how to use the `@capacitor/[plugin-name]` to `[action]`. handling permissions for both Android and iOS. Include error handling for when the feature is not available (e.g., on web)."
+
+### 3. Debugging RxJS/Signals
+
+> "I have an effect in this component that is causing an infinite loop. Here is the code: `[paste code]`. Analyze the Signal dependencies and suggest a fix."
+
+## Irregular Workflows (Audits & Architecture)
+
+Use these deeper prompts for periodic reviews or major feature planning.
+
+### 1. Security & Maintenance Audit
+
+(Use this to periodically check your feature branch)
+
+> "I want to do a thorough audit of this codebase/module for the following things:
+>
+> 1. **Potential security issues** (e.g., improper data handling, exposed secrets).
+> 2. **Long-term maintenance issues** (e.g., high complexity, tight coupling).
+> 3. **DX Optimizations** (e.g., recurring boilerplate that could be abstracted).
+> 4. **Testing Gaps** (edge cases not covered).
+>
+> Be thorough. Context: This is an Nx monorepo. Dependencies are managed in the root `package.json`."
+
+### 2. Accessibility (a11y) Review
+
+> "Audit this component `[paste code]` for WCAG 2.1 AA compliance. Focus on:
+>
+> - Keyboard navigation.
+> - Screen reader compatibility (proper `aria-labels`).
+> - Color contrast (using our Tailwind theme)."
+
+### 3. Performance Review
+
+> "Analyze this Angular template and component class for performance bottlenecks. Look for:
+>
+> - Expensive computations in templates (should be computed signals or pipes).
+> - Memory leaks (unsubscribed Observables).
+> - Large bundle size contributors."
+
+## Improving AI Context
+
+If you find the AI is consistently making mistakes about our project structure or rules:
+
+1. **Check `AGENTS.md`**: This file contains the high-level rules the AI follows.
+2. **Update Rules**: If a library version changes (e.g., upgrading to Angular 22) or a new strict coding standard is introduced, update `AGENTS.md` or the relevant file in `.agent/rules/`.
+3. **Feedback Loop**: Treat the AI rules as code. Refine them to improve the "developer experience" for everyone using AI in this repo.

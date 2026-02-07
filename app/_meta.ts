@@ -1,14 +1,17 @@
-export default {
+const meta = {
+  "ai-best-practices": "AI Best Practices",
   index: "Introduction",
   setup: "Setup",
   applications: "Applications",
-  server: "Server",
+  server: "Server & API",
   advanced: "Advanced",
   translations: "Translations",
-  design: "Design Manual",
+  design: "Destign System",
   troubleshooting: "Troubleshooting",
   issues: {
     title: "Issues ↗",
     href: "https://github.com/e-picsa/picsa-apps/issues",
   },
 };
+
+export default meta;
