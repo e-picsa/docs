@@ -1,5 +1,4 @@
 const meta = {
-  "ai-best-practices": "AI Best Practices",
   index: "Introduction",
   setup: "Setup",
   applications: "Applications",
@@ -8,6 +7,7 @@ const meta = {
   translations: "Translations",
   design: "Destign System",
   troubleshooting: "Troubleshooting",
+  "ai-best-practices": "AI Best Practices",
   issues: {
     title: "Issues ↗",
     href: "https://github.com/e-picsa/picsa-apps/issues",
