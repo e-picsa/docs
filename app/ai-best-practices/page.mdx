@@ -78,6 +78,61 @@ Use the AI to upgrade your own skills. When you are working in a new area of the
 - "I'm new to this part of the codebase. Explain how the `AuthGuard` implements the permission checks effectively."
 - "Why did you suggest `concatMap` instead of `mergeMap` here?"
 
+## Using the Supabase MCP Server
+
+For backend development and debugging, you can give the AI direct access to your local database using the Supabase MCP Server.
+
+### Setup
+If using antigravity, open the `MCP Servers` setting from the secondary menu
+![](./mcp-settings.png)
+
+Click on `Manage MCP Servers` and then `View Raw Config`
+
+![](./mcp-edit.png)
+
+This should open the `mcp_config.json` file where you can add a custom server
+
+```json
+"supabase-db": {
+  "command": "npx",
+  "args": [
+    "-y",
+    "@modelcontextprotocol/server-postgres",
+    "postgresql://postgres:postgres@localhost:54322/postgres" 
+  ]
+}
+```
+
+### Example Use Case
+
+**Context:** You are debugging data loading issues for high-altitude stations.
+
+**Prompt:**
+> "List all climate stations in Zambia (country code 'zm') that are above 1300m elevation. Return the name, district, and elevation."
+
+**AI Action:**
+The AI will use the `supabase-db` tool to execute a SQL query:
+```sql
+SELECT station_name, elevation, district 
+FROM climate_stations 
+WHERE country_code = 'zm' AND elevation > 1300 
+ORDER BY elevation DESC;
+```
+
+**Output:**
+```json
+[
+  { "station_name": "MBALA MET", "elevation": 1673, "district": "MBALA" },
+  { "station_name": "MISAMFU AGROMET", "elevation": 1535, "district": "KASAMA" },
+  { "station_name": "CHINSALI FTC", "elevation": 1404, "district": "CHINSALI" },
+  ...
+]
+```
+
+<Callout type="info">
+**Tip:** This is much faster than asking the AI to script API calls. It allows for instant schema inspection and complex filtering.
+</Callout>
+
 ## Recommended Tools & Models
 
 Based on our tech stack (**Angular**, **Capacitor**, **Nx**), we recommend:
