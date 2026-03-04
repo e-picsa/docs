@@ -1,13 +1,12 @@
 const meta = {
   index: "Introduction",
-  setup: "Setup",
-  applications: "Applications",
-  server: "Server & API",
+  server: "Server Management",
+  deployment: "Deployment Management",
   advanced: "Advanced",
   translations: "Translations",
-  design: "Destign System",
+  design: "Design System",
   troubleshooting: "Troubleshooting",
-  "ai-best-practices": "AI Best Practices",
+  "ai-best-practices": "AI",
   issues: {
     title: "Issues ↗",
     href: "https://github.com/e-picsa/picsa-apps/issues",
