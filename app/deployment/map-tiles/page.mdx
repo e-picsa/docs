@@ -111,7 +111,7 @@ out geom;
 Otherwise will likely need to create a search limited to country bounding box and filter out results that are not part of country
 Use web viewport bounding box via `{{bbox}}` query, or specify coordinates for custom bounding box
 
-```
+```overpassql
 [out:json][timeout:25];
 // gather results
 nwr["admin_level"="5"]["boundary"="administrative"]["type"="boundary"]({{bbox}});
