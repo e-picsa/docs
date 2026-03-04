@@ -29,7 +29,7 @@ yarn nx run picsa-server:gen-types
 ```
 
 ### Data updates
-Finally provided mappings in the hardcoded app data mappings 
+Finally provide mappings in the hardcoded app data mappings 
 
 `libs\data\deployments\countries.ts`.
 ```ts
@@ -55,7 +55,9 @@ https://en.wikipedia.org/wiki/List_of_aspect_ratios_of_national_flags
 2. Compress SVGs via
 https://jakearchibald.github.io/svgomg/
 
-3. Place in local folder `libs/shared-assets/images/flags`
+3. Place in local folder for app `libs/shared-assets/images/flags`
 
-4. Upload to Supabase Storage Bucket `global/images/flags`
+4. Place in local folder for supabase `apps\picsa-server\supabase\data\storage\global\images\flags\zw.svg`
+
+5. Upload to Supabase Storage Bucket `global/images/flags`
 
