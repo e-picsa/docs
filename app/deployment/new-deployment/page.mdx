@@ -1,0 +1,61 @@
+# Create Deployment
+
+## Database updates
+
+### Country code
+Register [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) for the country within the database schema.
+
+E.g., if adding the country "Zimbabwe", should use code `zw`
+
+```sql
+ALTER TYPE country_code ADD VALUE 'zw';
+```
+
+### Languages
+Additionally register any language codes using the [ISO 639 Set 1 standard](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes)
+
+Include an `en` variant for localised updates to English language variables, e.g. adding `shona` and `ndebele` languages
+
+Update database
+```sql
+ALTER TYPE locale_code ADD VALUE 'zw_en';
+ALTER TYPE locale_code ADD VALUE 'zw_sn';
+ALTER TYPE locale_code ADD VALUE 'zw_nd';
+```
+
+When all database updates are complete export the new type-definitions via
+```bash
+yarn nx run picsa-server:gen-types
+```
+
+### Data updates
+Finally provided mappings in the hardcoded app data mappings 
+
+`libs\data\deployments\countries.ts`.
+```ts
+const COUNTRIES_BASE: { [key in ICountryCode]: { label: string } } = {
+  zw: { label: 'Zimbabwe' },
+};
+```
+
+`libs\data\deployments\locales.ts`.
+```ts
+const LOCALES_BASE: {
+zw_en: { language_code: 'en', language_label: 'English', country_code: 'zw' },
+zw_sn: { language_code: 'sn', language_label: 'Shona', country_code: 'zw' },
+zw_nd: { language_code: 'nd', language_label: 'Ndebele', country_code: 'zw' },
+}
+```
+
+## Static Assets
+
+1. Downloaded from public source, e.g.
+https://en.wikipedia.org/wiki/List_of_aspect_ratios_of_national_flags
+
+2. Compress SVGs via
+https://jakearchibald.github.io/svgomg/
+
+3. Place in local folder `libs/shared-assets/images/flags`
+
+4. Upload to Supabase Storage Bucket `global/images/flags`
+
