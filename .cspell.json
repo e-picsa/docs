@@ -5,6 +5,7 @@
     "node_modules/**",
     "**/node_modules/**",
     ".next/",
+    "app/ai-best-practices",
     "out",
     "public/",
     "package.json",
