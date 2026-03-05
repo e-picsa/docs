@@ -21,14 +21,14 @@ https://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative
 
 Go to `Web` -> `QuickMapServices` -> `OSM` -> `OSM Standard`
 
-![](osm-baselayer.png)
+![](./osm-baselayer.png)
 
 You should now have a zoomable basemap
 
 ## Add Administrative Boundaries
 
 Go to `Vector` -> `QuickOSM` -> `QuickOSM`
-![](admin-boundaries.png)
+![](./admin-boundaries.png)
 
 
 Create a new `Query` to generate administrative boundaries.
@@ -46,13 +46,13 @@ out body;
 
 Use `Advanced` to select only `Lines`
 
-![](admin-4-query.png)
+![](./admin-4-query.png)
 
 Click `Run Query`
 
 This should update the QGIS map with a new `OSMQuery` layer that shows outlined regions
 
-![](admin-4-layer.png)
+![](./admin-4-layer.png)
 
 ## Export GeoJson
 _Right-Click_ the layer and select `Export` -> `Save Features As`
@@ -61,7 +61,7 @@ Use the dialog to provide an output file location
 
 Deselect all fields except for `name`
 
-![](export-geojson.png)
+![](./export-geojson.png)
 
 Save the geojson file
 
