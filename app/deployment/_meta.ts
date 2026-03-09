@@ -1,4 +1,5 @@
 export default {
-  "new-deployment":"Add New Deployment",
-  "map-tiles":"Map Tiles"
+  "01-new-country":"Add New Country",
+  "02-map-geo-data":"Map Data",
+  "02-map-geo-data--legacy":"Map Data (legacy)"
 };

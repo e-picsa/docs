@@ -1,4 +1,4 @@
-# Map Tiles
+## Map Geo Data (Manual/Legacy)
 
 When generating a new deployment hardcoded map tiles should be exported so that they are immediately available to new app users
 All data is generated from [OpenStreetMap](https://www.openstreetmap.org/), using the [OverpassTurbo Api](https://overpass-turbo.eu/index.html)
@@ -72,20 +72,6 @@ https://mygeodata.cloud/converter/geojson-to-topojson
 
 Larger files may first need to be optimised locally first (e.g. removing metadata fields), or converted via local scripts
 
-----
-
-# Future TODOs
-
-It should be possible to integrate a single serverless function into the dashboard to handle all processing.
-
-It can call the overpassApi directly and use mapshaper to convert geojson to topojson
-
----
-
-# Legacy Docs
-
-{/* To Migrate */}
-
 ### Admin 5 data
 
 **Admin_5 - District/Province Boundaries**
@@ -128,8 +114,6 @@ Convert WSEN -> SWNE coordinates
 
 -18.271086, 21.379395, -7.863382, 34.453125
 South West North East
-
-
 
 
 ### Optimise
