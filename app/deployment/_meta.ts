@@ -1,4 +1,4 @@
 export default {
   "01-new-country":"Add New Country",
-  "map-tiles":"Map Tiles"
+  "02-map-geo-data":"Map Geo Data"
 };
