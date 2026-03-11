@@ -2,10 +2,28 @@
 
 A combination of map tile base images and topojson data are used within the app to show map geographic areas and administrative boundaries.
 
-A standalone repository has been setup for managing these processes, and integrated into the dashboard
-https://github.com/e-picsa/geo-boundaries-topojson
+A standalone repository has been setup for managing these processes
+https://github.com/e-picsa/geo-data
 
-## Dashboard Management
-Dashboard users with `app.admin` privileges can access the Geo administration pages and interact with the function via dashboard Api
+## Country Map
+The E-PICSA app includes a static export of all map tiles required to view an interactive map within the climate tool.
+To keep file sizes minimal only tiles used for active deployment countries are exported.
 
-(TODO - examples)
+When adding a new country also ensure corresponding map tiles are generated and included in the build.
+
+Tiles can be exported from:
+https://geo-data-api.picsa.app
+
+And should be placed in:
+`apps\picsa-tools\climate-tool\src\assets\mapTiles`
+
+## Country Boundaries
+
+Vector boundaries are overlaid on the map to show specific administrative boundaries, such as provinces or districts.
+
+These can also be exported from:
+https://geo-data-api.picsa.app
+
+And should be placed in:
+`libs\data\geoLocation`
+
