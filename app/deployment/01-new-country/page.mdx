@@ -46,6 +46,206 @@ When all database updates are complete export the new type-definitions via
 yarn nx run picsa-server:gen-types
 ```
 
+## Static Data updates
+
+### GeoLocation
+
+The E-PICSA app includes a static export of map tiles and geojson boundaries of administrative areas for included countries.
+This enables users to view interactive maps offline within the climate tool.
+
+A standalone repository has been setup for managing these processes, with highly optimised workflows to keep file size small
+https://github.com/e-picsa/geo-data
+
+The interactive dashboard can be accessed from:
+https://geo-data-api.picsa.app
+
+1. Export TopoJson and place in `libs/data/geoLocation`
+
+2. Exported map tiles and place in `apps/picsa-tools/climate-tool/src/assets/mapTiles`
+
+3. Manually populate lists of locations to corresponding province/district exports for the country in the 
+`libs/data/geolocation` directory. These can be manually extracted from the TopoJson (this should be automated in the future).
+
+4. Update geoLocation index to include data. Correct labels for administrative boundary levels (e.g province/district/) can be found
+on the [Open Street Map Wiki](https://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative#Table_:_Admin_level_for_all_countries)
+
+`libs\data\geoLocation\index.ts`
+```ts
+const GEO_LOCATION_DATA: { [country_code in ICountryCode]?: IGelocationData } = {
+  zw: {
+    topoJson: async () => {
+      const res = await import('./zw/ZW.topo.json');
+      return res.default;
+    },
+    admin_4: {
+      label: translateMarker('Province'),
+      locations: ZW_PROVINCES,
+    },
+  },
+};
+```
+
+### Budget Tool
+(TODO)
+
+### Climate Tool
+1. Add climate definitions for the country, ensuring any country-specific alterations are made
+to items such as seasonal rainfall definitions.
+
+`libs\data\climate\chart_definitions\zw.ts`
+```ts
+import DEFAULT_DEFINITIONS from './default';
+
+const definitions = DEFAULT_DEFINITIONS();
+
+definitions.rainfall.definition = translateMarker(
+  'Seasonal total rainfall calculated between the defined start and defined end of the season',
+);
+
+export default definitions;
+```
+
+2. Ensure hardcoded list of climates stations populated
+
+```ts
+const stations: IStationMeta[] = [
+  {
+    id: 'chinsali_ftc',
+    name: 'CHINSALI FTC',
+    latitude: -10.56,
+    longitude: 32.06,
+    district: 'CHINSALI',
+  }
+].map((station) => ({
+  ...station,
+  countryCode: 'zw',
+  definitions: CLIMATE_CHART_DEFINTIONS.zw,
+}));
+```
+
+`apps\picsa-tools\climate-tool\src\app\data\stations\index.ts`
+```ts
+export const HARDCODED_STATIONS = ([] as IStationMeta[]).concat(
+  ZW_STATIONS,
+);
+```
+<Callout>
+The "district" entry currently refers to admin_4 boundary (even though it may be named differently).
+
+This should be tidied up in the future to automatically export from the dashboard with corrected data.
+</Callout>
+
+### Manual Tool
+Ensure any translated manual versions are populated as resources
+
+`apps\picsa-tools\resources-tool\src\app\data\picsa\manuals.ts`
+
+```ts
+export const PICSA_MANUAL_RESOURCES: { [id in IPicsaManualId]: IResourceFile } = {
+  picsa_manual_farmer_zm_bem: {
+    id: 'picsa_manual_farmer_zm_bem',
+    type: 'file',
+    subtype: 'pdf',
+    title: 'Ukusangwako ku milimo ya miceele iyabikwa pamo iya bulimi',
+    mimetype: 'application/pdf',
+    description: '',
+    language: 'zm_bem',
+    filename: 'picsa-manual-farmer.bem.pdf',
+    url: 'https://wpctacqpzxfzlucblowh.supabase.co/storage/v1/object/public/zm/manual/farmer/picsa-manual-farmer.bem.pdf',
+    md5Checksum: 'cdce2b36a9289bb80f12c5cc5b8ee44a',
+    size_kb: 1580,
+    filter: { countries: ['zm'] },
+    keywords: ['manual', 'farmer'],
+    priority: 1,
+  }
+}
+```
+
+## Theming
+
+Each variation of the extension app is themed to match the country.
+
+Colours are typically chosen to reflect national [flag color codes](https://www.flagcolorcodes.com/),
+and generated as a theme using legacy [Material Design Palette Generator](https://moikaturns.github.io/mcg) [GitHub](https://github.com/mbitson/mcg)
+
+`./libs/theme/src/themes/picsa-zw.scss`
+```scss
+@use 'mixins';
+@use '@angular/material' as mat;
+
+$primary: (
+  // ...
+  500: #009739,
+  // ...
+)
+$secondary: (
+  // ...
+  500: #fce300,,
+  // ...
+)
+
+$palette-primary: mat.m2-define-palette($primary);
+$palette-accent: mat.m2-define-palette($accent, A200, A100, A400);
+$palette-warn: mat.m2-define-palette(mat.$m2-red-palette);
+
+$theme-zw: mat.m2-define-light-theme(
+  (
+    color: (
+      primary: $palette-primary,
+      accent: $palette-accent,
+      warn: $palette-warn,
+    ),
+  )
+);
+
+body[data-theme='picsa-zw'] {
+  @include mat.all-component-themes($theme-zw);
+  @include mixins.setColorVariables($palette-primary, $palette-accent, $palette-warn);
+}
+```
+The theme should be exported from the main theming index to be available to the app
+
+`./libs/theme/src/themes/_index.scss`
+```scss
+@import './picsa-zw.scss';
+```
+
+## Configuration Entry
+Add an entry so that the country appears in list of available deployments for selection
+
+`libs\data\deployments\index.ts`
+```ts
+const DEPLOYMENTS_BASE = {
+ 
+  zw: generate({
+    country_code: 'zw',
+    budgetTool: {
+      currency: 'ZMD',
+      currencyBaseValue: 100,
+    },
+    theme: 'picsa-zw',
+  }),
+} as const;
+```
+
+
+
+## Legacy configuration
+There are also a handful of legacy configuration items which will be slowly phased out over time
+
+1. Update mapping of generated legacy country code to new
+
+`libs\data\geoLocation\legacy-mapping.ts`
+```ts
+export const COUNTRY_CODE_LEGACY_MAPPING: Record<CountryCodeLegacy, CountryCode> = {
+  zw: 'ZW',
+};
+```
+
+2. 
+
+
+
 ---
 ## TODO - Review and tidy
 
