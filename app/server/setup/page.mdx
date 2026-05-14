@@ -42,17 +42,24 @@ yarn nx run picsa-server:supabase status --output json
 
 This key should be populated to `libs\environments\src\supabase\config.json`
 
-### Create User
+### User Login
 
-In order to allow communication from unauthenticated users to the database a custom anonymous user
-should be created from the studio dashboard with credentials:
+By default 2 users are automatically created from seed database to make it easier to test different auth roles
+
+| email | password  | 
+| ---   | ---       |
+| admin@picsa.app | admin@picsa.app |
+| user@picsa.app | user@picsa.app |
+
+It is recommended to use the admin user as that will have full access to all deployments and functionality.
+
+Additional test users can also be created locally from the dashboard
 
 http://localhost:54323/project/default/auth/users
 
-email: `anonymous_user@picsa.app`
-password: `anonymous_user@picsa.app`
-
 Ensure **Auto Confirm** is checked
+
+Any created users will need to be invited to specific projects by an admin
 
 ### Stop Server
 
