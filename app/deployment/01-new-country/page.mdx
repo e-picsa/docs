@@ -16,7 +16,6 @@ VALUES ('ZW', 'Zimbabwe', null);
 
 Once the country has been added register available languages, e.g.
 
-
 ### Languages
 Once the country has been added register any language codes using the [ISO 639 Set 1 standard](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes)
 
@@ -46,9 +45,7 @@ When all database updates are complete export the new type-definitions via
 yarn nx run picsa-server:gen-types
 ```
 
-## Static Data updates
-
-### GeoLocation
+## Map and Geo Data
 
 The E-PICSA app includes a static export of map tiles and geojson boundaries of administrative areas for included countries.
 This enables users to view interactive maps offline within the climate tool.
@@ -84,6 +81,9 @@ const GEO_LOCATION_DATA: { [country_code in ICountryCode]?: IGelocationData } = 
   },
 };
 ```
+
+## Tools
+
 
 ### Budget Tool
 (TODO)
@@ -161,7 +161,22 @@ export const PICSA_MANUAL_RESOURCES: { [id in IPicsaManualId]: IResourceFile } =
 }
 ```
 
-## Theming
+## Static Assets
+
+### Flag Icon
+1. Downloaded from public source, e.g.
+https://en.wikipedia.org/wiki/List_of_aspect_ratios_of_national_flags
+
+2. Compress SVGs via
+https://jakearchibald.github.io/svgomg/
+
+3. Place in local folder for app `libs/shared-assets/images/flags`
+
+4. Place in local folder for supabase `apps\picsa-server\supabase\data\storage\global\images\flags\zw.svg`
+
+5. Upload to Supabase Storage Bucket `global/images/flags`
+
+## Extension App Theming
 
 Each variation of the extension app is themed to match the country.
 
@@ -228,8 +243,6 @@ const DEPLOYMENTS_BASE = {
 } as const;
 ```
 
-
-
 ## Legacy configuration
 There are also a handful of legacy configuration items which will be slowly phased out over time
 
@@ -242,16 +255,7 @@ export const COUNTRY_CODE_LEGACY_MAPPING: Record<CountryCodeLegacy, CountryCode>
 };
 ```
 
-2. 
-
-
-
----
-## TODO - Review and tidy
-
-
-### Data updates
-Finally provide mappings in the hardcoded app data mappings 
+2. Provide mappings in the hardcoded app data mappings 
 
 `libs\data\deployments\countries.ts`.
 ```ts
@@ -268,18 +272,3 @@ zw_sn: { language_code: 'sn', language_label: 'Shona', country_code: 'zw' },
 zw_nd: { language_code: 'nd', language_label: 'Ndebele', country_code: 'zw' },
 }
 ```
-
-## Static Assets
-
-1. Downloaded from public source, e.g.
-https://en.wikipedia.org/wiki/List_of_aspect_ratios_of_national_flags
-
-2. Compress SVGs via
-https://jakearchibald.github.io/svgomg/
-
-3. Place in local folder for app `libs/shared-assets/images/flags`
-
-4. Place in local folder for supabase `apps\picsa-server\supabase\data\storage\global\images\flags\zw.svg`
-
-5. Upload to Supabase Storage Bucket `global/images/flags`
-
