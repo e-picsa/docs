@@ -68,7 +68,7 @@ on the [Open Street Map Wiki](https://wiki.openstreetmap.org/wiki/Tag:boundary%3
 
 `libs\data\geoLocation\index.ts`
 ```ts
-const GEO_LOCATION_DATA: { [country_code in ICountryCode]?: IGelocationData } = {
+const GEO_LOCATION_DATA: { [country_code in ICountryCode]?: IGeolocationData } = {
   zw: {
     topoJson: async () => {
       const res = await import('./zw/ZW.topo.json');
@@ -119,7 +119,7 @@ const stations: IStationMeta[] = [
 ].map((station) => ({
   ...station,
   countryCode: 'zw',
-  definitions: CLIMATE_CHART_DEFINTIONS.zw,
+  definitions: CLIMATE_CHART_DEFINITIONS.zw,
 }));
 ```
 
@@ -146,7 +146,7 @@ export const PICSA_MANUAL_RESOURCES: { [id in IPicsaManualId]: IResourceFile } =
     id: 'picsa_manual_farmer_zm_bem',
     type: 'file',
     subtype: 'pdf',
-    title: 'Ukusangwako ku milimo ya miceele iyabikwa pamo iya bulimi',
+    title: 'Ukusangwako ku milimo ya miceele iyabikwa pamo iya bulimi', // cspell:disable-line
     mimetype: 'application/pdf',
     description: '',
     language: 'zm_bem',
