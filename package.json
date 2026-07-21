@@ -3,7 +3,7 @@
   "license": "See LICENSE",
   "version": "2.0.0",
   "scripts": {
-    "build": "next build",
+    "build": "next build && pagefind --site out --output-path public/_pagefind && cp -R public/_pagefind out/",
     "spellcheck": "yarn cspell .",
     "start": "opener http://localhost:3000 && next dev -p 3000",
     "start:prod": "next build && npx serve out",
@@ -25,6 +25,7 @@
     "eslint": "^9.39.2",
     "eslint-config-next": "^16.1.6",
     "opener": "^1.5.2",
+    "pagefind": "^1.5.2",
     "typescript": "5.8.2"
   },
   "engines": {
