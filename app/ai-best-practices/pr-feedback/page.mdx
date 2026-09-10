@@ -67,13 +67,14 @@ The invocation syntax depends on the tool; the workflow does not.
 
 The skill follows five phases:
 
-1. **Inspect.** Fetch PR details, review comments, and CI checks using
-   GitHub CLI.
+1. **Inspect and check freshness.** Fetch PR details, review comments, and
+   CI checks using GitHub CLI. Verify that PR-Agent review comments reflect
+   the current branch commit before proceeding.
 2. **Triage.** Classify feedback as accept, push back, or escalate.
 3. **Plan.** Present the proposed changes and obtain developer approval.
 4. **Implement and verify.** Apply focused fixes and run local checks.
-5. **Deliver.** Batch the changes into a commit, push, and provide review
-   responses and a handoff summary.
+5. **Deliver upon approval.** Present verified changes to the developer;
+   commit and push only upon explicit confirmation, and draft review responses.
 
 Approval of the plan is not approval of the resulting code. The
 developer still reviews the implementation before requesting another
@@ -84,8 +85,10 @@ flowchart TD
   feedback["Automated PR feedback"] --> triage["Inspect and triage"]
   triage --> approval["Developer approves the plan"]
   approval --> fixes["Apply fixes and run local checks"]
-  fixes --> delivery["Batch commit, push, and summarize"]
-  delivery --> human["Developer reviews the changes"]
+  fixes --> delivery["Present verified changes & request push approval"]
+  delivery --> human["Developer reviews changes & approves push"]
+  human --> pushStep["Batch commit and push upon approval"]
+  pushStep --> handoff["Handoff summary & draft responses"]
   human --> decision{"Another automated review needed?"}
   decision -->|"Yes, after manual review"| request["Developer requests review"]
   request --> feedback
@@ -148,6 +151,12 @@ The skill must not post `/review` or `/improve` automatically.
 
 After completing its work, the assistant should hand control back to
 the developer—not immediately request more feedback.
+
+#### Commit and push require explicit developer approval
+
+The assistant must not push changes automatically to the remote repository.
+Local changes and verification results must be presented first, making
+commit and push conditional on developer confirmation.
 
 #### Verification happens locally before pushing
 
