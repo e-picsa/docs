@@ -1,3 +1,18 @@
+# Remote Sync & Mirroring
+
+To reflect remote database data locally without committing database dumps into Git:
+
+```sh
+# Reset local database and seed with extended remote data
+yarn nx run picsa-server:db:seed:extended
+```
+
+The schemas and table configurations are defined in `apps/picsa-server/scripts/db-seed/db-seed.config.ts` via `SEED_DATA_EXTENDED_CONFIG`.
+
+Local development users (`admin@picsa.app`, `user@picsa.app`) and local storage buckets are automatically initialized after seeding.
+
+---
+
 https://www.youtube.com/watch?v=N0Wb85m3YMI
 
 ## Manual Changes

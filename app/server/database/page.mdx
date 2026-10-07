@@ -7,20 +7,47 @@ https://supabase.com/docs/guides/database/overview
 
 The database schema is defined within migration files that can be used both to bootstrap the database for first use, and to apply ongoing updates as required.
 
-To fully initialise a clean database (wipe existing data and changes and repopulate seed data), use the reset command.
+### Local Reset & Seeding (`db:seed`)
+
+To fully reset the database (wipe existing data and repopulate baseline seed data from disk):
 
 ```sh
-yarn nx run picsa-server:reset
+yarn nx run picsa-server:db:seed
 ```
 
-To partially apply only new migrations (keep existing data and changes)
+> [!NOTE]
+> This command automatically runs `supabase db reset` followed by importing local CSV datasets and storage files.
+
+### Remote Mirroring (`db:seed:extended`)
+
+To reset your local database and populate it with real, unfiltered server data for detailed development (without committing large data dumps into Git):
+
+```sh
+yarn nx run picsa-server:db:seed:extended
+```
+
+> [!NOTE]
+> Extended remote seed connects to remote Supabase and caches data locally in `scripts/db-seed/cache/ (per-table JSON files)` (gitignored) *before* resetting the local database. If remote fetching fails, your local database is untouched.
+>
+> To seed offline using the local cache, pass `--no-fetch`:
+> ```sh
+> yarn nx run picsa-server:db:seed:extended --no-fetch
+> ```
+>
+> Automatically preserves and initializes default local development users (`admin@picsa.app`, `user@picsa.app`) and local storage buckets, while omitting remote auth dependencies per `scripts/db-seed/db-seed.config.ts`.
+
+### Exporting Seed Data (`db:seed:export`)
+
+To export filtered seed tables from the remote database into local CSVs (`supabase/data/*_rows.csv`):
+
+```sh
+yarn nx run picsa-server:db:seed:export
+```
+
+### Migrations
+
+To partially apply only new migrations (keep existing data and changes):
 
 ```sh
 yarn nx run picsa-server:supabase migration up
-```
-
-To repopulate data from seed files run
-
-```sh
-yarn nx run picsa-server:seed
 ```

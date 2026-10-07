@@ -17,7 +17,7 @@ A rest client to trigger functions, E.g.
 If developing functions locally run via
 
 ```sh
-yarn nx run picsa-server:supabase functions serve
+yarn nx run picsa-server:functions:serve
 ```
 
 ### Authorization
@@ -84,7 +84,7 @@ http://localhost:54321/functions/v1/dashboard/my-function
 Whilst serving functions tests can be executed by
 
 ```sh
-yarn nx run picsa-server:test-functions
+yarn nx run picsa-server:functions:test
 ```
 
 In order to run tests that connect to supabase an additional `.env.test` file should be populated in the the functions directory with SUPABASE_ANON_KEY credentials
@@ -94,7 +94,7 @@ Tests are written using the [Behavior-Driven Development](https://docs.deno.com/
 Functions cli supports [additional arguments](https://fig.io/manual/deno/test) such as `--watch`
 
 ```sh
-yarn nx run picsa-server:test-functions --watch
+yarn nx run picsa-server:functions:test --watch
 ```
 
 ## Production Deployment
@@ -108,7 +108,7 @@ Where `--project-ref` is `id` of project from supabase console. If prompted for 
 
 Then deploy via:
 ```sh
-yarn nx run picsa-server:deploy-functions
+yarn nx run picsa-server:functions:deploy
 ```
 
 If functions require specific `Secrets` to be set ensure to update from the supabase console as required
