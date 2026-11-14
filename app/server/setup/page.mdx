@@ -53,6 +53,11 @@ By default 2 users are automatically created from seed database to make it easie
 
 It is recommended to use the admin user as that will have full access to all deployments and functionality.
 
+The retired `test` deployment no longer exists. Local development data for
+workshops and testing lives in the public `demo` deployment, which appears
+only after running `demo:reset` (see [Database](/server/database)) — it is
+not part of `db:seed`.
+
 Additional test users can also be created locally from the dashboard
 
 http://localhost:54323/project/default/auth/users
