@@ -62,14 +62,16 @@ CREATE POLICY "Storage zw public SELECT" ON storage.objects
 FOR SELECT TO public USING (bucket_id = 'zw');
 ```
 
-Authenticated writes need **no per-country policy changes**. The
-`Storage country authenticated *` policies apply to every non-`global` bucket
+Authenticated writes need **no per-country policy changes**. The three
+`Storage country authenticated *` policies all delegate to one shared helper,
+`storage_country_can_write()`, which grants writes on any non-`global` bucket
 where the caller holds a matching country role (`user_has_country_role`
 matches the bucket against the user's deployment countries, so a bucket with
-no deployment grants nobody anything). The `global` bucket is explicitly
-excluded and stays read-only: `user_has_country_role('global', …)` matches
-*every* deployment, so without the exclusion any country editor could write
-to shared global assets.
+no deployment grants nobody anything), and inserts additionally require
+`owner = auth.uid()` (same ownership rule as updates and deletes). The `global` bucket is explicitly
+excluded inside the helper and stays read-only:
+`user_has_country_role('global', …)` matches *every* deployment, so without
+the exclusion any country editor could write to shared global assets.
 
 The `demo` (`xx`) sandbox migration is a worked example of the full checklist
 (enum value, bucket + SELECT policy, geo rows):
