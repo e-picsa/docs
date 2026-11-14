@@ -44,11 +44,16 @@ To export filtered seed tables from the remote database into local CSVs (`supaba
 yarn nx run picsa-server:db:seed:export
 ```
 
+> [!NOTE]
+> Exports exclude `xx`-scoped demo content (single source of truth:
+> `scripts/demo/baseline/`), so a prod demo seed can never leak back into the
+> committed seeds. An explicit `--country=xx` overrides the exclusion.
+
 ### Demo Sandbox (`demo:reset`)
 
 To reset the shared `demo` (`xx`) sandbox used for workshops and development —
 wiping `xx`-scoped rows and `xx/uploads/*` scratch storage, then reseeding the
-curated baseline (`supabase/data/demo/`):
+curated baseline (`scripts/demo/baseline/`):
 
 ```sh
 yarn nx run picsa-server:demo:reset
