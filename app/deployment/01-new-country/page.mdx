@@ -38,6 +38,43 @@ ALTER table public.translations ADD zw_sn text;
 ALTER table public.translations ADD zw_nd text;
 ```
 
+### Country code enum
+
+Tables such as `resource_collections`, `resource_files`, `climate_station_data`
+and `translations` scope rows with the shared `public.country_code` enum.
+Register the new code before any rows use it:
+
+```sql
+ALTER TYPE public.country_code ADD VALUE IF NOT EXISTS 'zw';
+```
+
+### Storage bucket and policies
+
+Resource file uploads target a per-country storage bucket named after the
+country code. Create the bucket and its public read policy:
+
+```sql
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('zw', 'zw', true)
+ON CONFLICT (id) DO UPDATE SET name = excluded.name, public = excluded.public;
+
+CREATE POLICY "Storage zw public SELECT" ON storage.objects
+FOR SELECT TO public USING (bucket_id = 'zw');
+```
+
+Authenticated writes need **no per-country policy changes**. The
+`Storage country authenticated *` policies apply to every non-`global` bucket
+where the caller holds a matching country role (`user_has_country_role`
+matches the bucket against the user's deployment countries, so a bucket with
+no deployment grants nobody anything). The `global` bucket is explicitly
+excluded and stays read-only: `user_has_country_role('global', …)` matches
+*every* deployment, so without the exclusion any country editor could write
+to shared global assets.
+
+The `demo` (`xx`) sandbox migration is a worked example of the full checklist
+(enum value, bucket + SELECT policy, geo rows):
+`apps/picsa-server/supabase/migrations/20261115000000_demo_xx_country.sql`.
+
 ### Export Definitions
 
 When all database updates are complete export the new type-definitions via

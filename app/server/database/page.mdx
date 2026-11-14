@@ -44,6 +44,31 @@ To export filtered seed tables from the remote database into local CSVs (`supaba
 yarn nx run picsa-server:db:seed:export
 ```
 
+### Demo Sandbox (`demo:reset`)
+
+To reset the shared `demo` (`xx`) sandbox used for workshops and development —
+wiping `xx`-scoped rows and `xx/uploads/*` scratch storage, then reseeding the
+curated baseline (`supabase/data/demo/`):
+
+```sh
+yarn nx run picsa-server:demo:reset
+```
+
+> [!NOTE]
+> `demo:reset` defaults to the local container and runs without prompting.
+> To reset **prod**, run with `-- --remote` (requires `SUPABASE_DB_URL` and
+> `.env.server` secret, operator-only — it asks for typed confirmation and
+> refuses non-interactive shells, so never run it from CI).
+> `--dry-run` reports what would change without writing anything.
+>
+> The `demo` deployment itself is public, so anyone can join it without requesting access; its baseline content
+> (2 Malawi-derived stations, crops, resources, 1 static forecast) lives in
+> `scripts/demo/baseline/` (`index.ts`, plus generated per-table files like
+> `climate_station_data.ts`) — edit those files to evolve the demo, no migration
+> needed unless the schema itself changes.
+>
+> `demo:reset` also runs automatically at the end of `db:seed` and `db:seed:extended`.
+
 ### Migrations
 
 To partially apply only new migrations (keep existing data and changes):
